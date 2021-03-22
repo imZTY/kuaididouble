@@ -21,6 +21,10 @@ public class ZtoTest {
 //    private static final String appKey = "b3285c71bcd18644d7283";
 //    private static final String appSecret = "feba0af8b55b916702c19d8fb9e88e2b";
 
+    @Test
+    public void order() {
+
+    }
 
     @Test
     public void query() throws IOException {
@@ -28,7 +32,7 @@ public class ZtoTest {
 
         ZopPublicRequest request = new ZopPublicRequest();
 
-        request.setBody("{\"billCode\":\"12314232\"}");
+        request.setBody("{\"billCode\":\"73111435816656\"}");
 
         request.setUrl("https://japi-test.zto.com/zto.open.residualTime");
 

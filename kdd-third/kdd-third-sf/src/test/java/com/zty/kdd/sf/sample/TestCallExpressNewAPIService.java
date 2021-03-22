@@ -17,8 +17,8 @@ import com.sf.csim.express.service.HttpClientUtil;
 public class TestCallExpressNewAPIService {
     //丰桥新沙箱测试顾客编码  Yg4Zf06w_sxZs3A5D
     //校验码                          3Xdk1jqeG1Xod9nUXus8Op7DNOkchTnw
-    private static final String CLIENT_CODE = "Yg4Zf06w_sxZs3A5D";  //此处替换为您在丰桥平台获取的顾客编码
-    private static final String CHECK_WORD = "3Xdk1jqeG1Xod9nUXus8Op7DNOkchTnw";//此处替换为您在丰桥平台获取的校验码
+    private static final String CLIENT_CODE = "KMKJPh";  //此处替换为您在丰桥平台获取的顾客编码
+    private static final String CHECK_WORD = "DGJiz0VoHeEKnSAuK98sPIwqTQX6xupI";//此处替换为您在丰桥平台获取的校验码
 
     //沙箱环境的地址
     private static final String CALL_URL_BOX = "https://sfapi-sbox.sf-express.com/std/service";
