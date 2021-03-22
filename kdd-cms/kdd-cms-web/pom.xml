@@ -11,5 +11,17 @@
 
     <artifactId>kdd-cms-web</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>framework-web</artifactId>
+            <version>${zty-wheels.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zty.kuaididouble</groupId>
+            <artifactId>kdd-core-facade</artifactId>
+            <version>${kuaididouble.version}</version>
+        </dependency>
+    </dependencies>
 </project>

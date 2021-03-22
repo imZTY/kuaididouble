@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zty.kdd.dao.TransQueryLogDOMapper" >
+  <resultMap id="BaseResultMap" type="com.zty.kdd.DO.TransQueryLogDO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="account_id" property="accountId" jdbcType="INTEGER" />
+    <result column="third_api_company" property="thirdApiCompany" jdbcType="TINYINT" />
+    <result column="request_msg" property="requestMsg" jdbcType="VARCHAR" />
+    <result column="response_msg" property="responseMsg" jdbcType="VARCHAR" />
+    <result column="cost_time" property="costTime" jdbcType="BIGINT" />
+    <result column="is_error" property="isError" jdbcType="TINYINT" />
+    <result column="message_id" property="messageId" jdbcType="VARCHAR" />
+    <result column="request_ip" property="requestIp" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, account_id, third_api_company, request_msg, response_msg, cost_time, is_error, 
+    message_id, request_ip, create_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zty.kdd.DO.example.TransQueryLogDOExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from trans_query_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from trans_query_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from trans_query_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zty.kdd.DO.example.TransQueryLogDOExample" >
+    delete from trans_query_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zty.kdd.DO.TransQueryLogDO" >
+    insert into trans_query_log (id, account_id, third_api_company, 
+      request_msg, response_msg, cost_time, 
+      is_error, message_id, request_ip, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{accountId,jdbcType=INTEGER}, #{thirdApiCompany,jdbcType=TINYINT}, 
+      #{requestMsg,jdbcType=VARCHAR}, #{responseMsg,jdbcType=VARCHAR}, #{costTime,jdbcType=BIGINT}, 
+      #{isError,jdbcType=TINYINT}, #{messageId,jdbcType=VARCHAR}, #{requestIp,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zty.kdd.DO.TransQueryLogDO" >
+    insert into trans_query_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="accountId != null" >
+        account_id,
+      </if>
+      <if test="thirdApiCompany != null" >
+        third_api_company,
+      </if>
+      <if test="requestMsg != null" >
+        request_msg,
+      </if>
+      <if test="responseMsg != null" >
+        response_msg,
+      </if>
+      <if test="costTime != null" >
+        cost_time,
+      </if>
+      <if test="isError != null" >
+        is_error,
+      </if>
+      <if test="messageId != null" >
+        message_id,
+      </if>
+      <if test="requestIp != null" >
+        request_ip,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="accountId != null" >
+        #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="thirdApiCompany != null" >
+        #{thirdApiCompany,jdbcType=TINYINT},
+      </if>
+      <if test="requestMsg != null" >
+        #{requestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="responseMsg != null" >
+        #{responseMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="costTime != null" >
+        #{costTime,jdbcType=BIGINT},
+      </if>
+      <if test="isError != null" >
+        #{isError,jdbcType=TINYINT},
+      </if>
+      <if test="messageId != null" >
+        #{messageId,jdbcType=VARCHAR},
+      </if>
+      <if test="requestIp != null" >
+        #{requestIp,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zty.kdd.DO.example.TransQueryLogDOExample" resultType="java.lang.Integer" >
+    select count(*) from trans_query_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update trans_query_log
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.accountId != null" >
+        account_id = #{record.accountId,jdbcType=INTEGER},
+      </if>
+      <if test="record.thirdApiCompany != null" >
+        third_api_company = #{record.thirdApiCompany,jdbcType=TINYINT},
+      </if>
+      <if test="record.requestMsg != null" >
+        request_msg = #{record.requestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.responseMsg != null" >
+        response_msg = #{record.responseMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.costTime != null" >
+        cost_time = #{record.costTime,jdbcType=BIGINT},
+      </if>
+      <if test="record.isError != null" >
+        is_error = #{record.isError,jdbcType=TINYINT},
+      </if>
+      <if test="record.messageId != null" >
+        message_id = #{record.messageId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.requestIp != null" >
+        request_ip = #{record.requestIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update trans_query_log
+    set id = #{record.id,jdbcType=INTEGER},
+      account_id = #{record.accountId,jdbcType=INTEGER},
+      third_api_company = #{record.thirdApiCompany,jdbcType=TINYINT},
+      request_msg = #{record.requestMsg,jdbcType=VARCHAR},
+      response_msg = #{record.responseMsg,jdbcType=VARCHAR},
+      cost_time = #{record.costTime,jdbcType=BIGINT},
+      is_error = #{record.isError,jdbcType=TINYINT},
+      message_id = #{record.messageId,jdbcType=VARCHAR},
+      request_ip = #{record.requestIp,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zty.kdd.DO.TransQueryLogDO" >
+    update trans_query_log
+    <set >
+      <if test="accountId != null" >
+        account_id = #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="thirdApiCompany != null" >
+        third_api_company = #{thirdApiCompany,jdbcType=TINYINT},
+      </if>
+      <if test="requestMsg != null" >
+        request_msg = #{requestMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="responseMsg != null" >
+        response_msg = #{responseMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="costTime != null" >
+        cost_time = #{costTime,jdbcType=BIGINT},
+      </if>
+      <if test="isError != null" >
+        is_error = #{isError,jdbcType=TINYINT},
+      </if>
+      <if test="messageId != null" >
+        message_id = #{messageId,jdbcType=VARCHAR},
+      </if>
+      <if test="requestIp != null" >
+        request_ip = #{requestIp,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zty.kdd.DO.TransQueryLogDO" >
+    update trans_query_log
+    set account_id = #{accountId,jdbcType=INTEGER},
+      third_api_company = #{thirdApiCompany,jdbcType=TINYINT},
+      request_msg = #{requestMsg,jdbcType=VARCHAR},
+      response_msg = #{responseMsg,jdbcType=VARCHAR},
+      cost_time = #{costTime,jdbcType=BIGINT},
+      is_error = #{isError,jdbcType=TINYINT},
+      message_id = #{messageId,jdbcType=VARCHAR},
+      request_ip = #{requestIp,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
