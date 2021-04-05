@@ -1,13 +1,11 @@
 ﻿
-/files/
-*/files/*
+files
 *.zip
-
 *.class
 
 *.jar
 
-/.idea/*
+.idea
 
 target
 
