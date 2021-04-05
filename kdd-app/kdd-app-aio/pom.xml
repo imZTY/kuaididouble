@@ -11,5 +11,36 @@
 
     <artifactId>kdd-app-aio</artifactId>
 
+    <dependencies>
+        <!-- 内部依赖 -->
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>redis-bo</artifactId>
+            <version>${zty-wheels.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>file-web</artifactId>
+            <version>${zty-wheels.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>account-web</artifactId>
+            <version>${zty-wheels.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>framework-springboot-app</artifactId>
+            <version>${zty-wheels.version}</version>
+        </dependency>
+    </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
