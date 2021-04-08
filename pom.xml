@@ -6,10 +6,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>kdd-third</module>
+<!--        <module>kdd-third</module>-->
         <module>kdd-core</module>
-        <module>kdd-app</module>
         <module>kdd-cms</module>
+        <module>kdd-app</module>
     </modules>
 
     <!-- 继承 SpringBoot -->
@@ -37,6 +37,12 @@
             <dependency>
                 <groupId>com.zty</groupId>
                 <artifactId>framework-common</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>framework-third</artifactId>
                 <version>${zty-wheels.version}</version>
                 <scope>compile</scope>
             </dependency>

@@ -2,12 +2,15 @@
 files
 *.zip
 *.class
+*.iml
 
 *.jar
 
 .idea
 
 target
+
+**/target
 
 node_modules
 

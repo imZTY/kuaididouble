@@ -16,7 +16,6 @@
         <dependency>
             <groupId>com.zty</groupId>
             <artifactId>framework-common</artifactId>
-            <version>${zty-wheels.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
