@@ -14,6 +14,7 @@
     <modules>
         <module>kdd-core-facade</module>
         <module>kdd-core-service</module>
+        <module>kdd-core-api</module>
     </modules>
 
 

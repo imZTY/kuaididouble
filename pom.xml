@@ -27,7 +27,100 @@
     <properties>
         <zty-wheels.version>0.8.1</zty-wheels.version>
         <kuaididouble.version>1.0-SNAPSHOT</kuaididouble.version>
+        <pagehelper.version>4.2.1</pagehelper.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 内部依赖 -->
+            <!-- 框架 -->
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>framework-common</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>framework-bo</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>framework-web</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>framework-springboot-app</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <!-- redis插件:缓存、MQ -->
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>redis-common</artifactId>
+                <version>${zty-wheels.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>redis-bo</artifactId>
+                <version>${zty-wheels.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>redis-web</artifactId>
+                <version>${zty-wheels.version}</version>
+            </dependency>
+            <!-- 账号模块插件 -->
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>account-common</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>account-bo</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>account-web</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <!-- 文件模块插件 -->
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>file-common</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>file-bo</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>file-web</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- 第三方依赖 -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

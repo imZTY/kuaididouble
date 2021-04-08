@@ -15,23 +15,26 @@
         <!-- 内部依赖 -->
         <dependency>
             <groupId>com.zty</groupId>
+            <artifactId>framework-springboot-app</artifactId>
+        </dependency>
+        <!-- 内部插件 -->
+        <dependency>
+            <groupId>com.zty</groupId>
             <artifactId>redis-bo</artifactId>
-            <version>${zty-wheels.version}</version>
         </dependency>
         <dependency>
             <groupId>com.zty</groupId>
             <artifactId>file-web</artifactId>
-            <version>${zty-wheels.version}</version>
         </dependency>
         <dependency>
             <groupId>com.zty</groupId>
             <artifactId>account-web</artifactId>
-            <version>${zty-wheels.version}</version>
         </dependency>
+        <!-- kdd模块 -->
         <dependency>
-            <groupId>com.zty</groupId>
-            <artifactId>framework-springboot-app</artifactId>
-            <version>${zty-wheels.version}</version>
+            <groupId>com.zty.kuaididouble</groupId>
+            <artifactId>kdd-cms-web</artifactId>
+            <version>${kuaididouble.version}</version>
         </dependency>
     </dependencies>
 

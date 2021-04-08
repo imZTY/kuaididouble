@@ -15,7 +15,16 @@
         <dependency>
             <groupId>com.zty</groupId>
             <artifactId>framework-web</artifactId>
-            <version>${zty-wheels.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>account-bo</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>file-bo</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>

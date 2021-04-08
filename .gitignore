@@ -14,3 +14,4 @@ node_modules
 /.idea/workspace.xml
 
 **/.flattened-pom.xml
+*.class
