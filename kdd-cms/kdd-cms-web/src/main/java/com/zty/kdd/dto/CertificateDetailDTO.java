@@ -3,11 +3,9 @@ package com.zty.kdd.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.zty.common.DO.AccountInfoDO;
 import com.zty.common.DO.FileInfoDO;
 import com.zty.common.DO.UserInfoDO;
 import com.zty.common.dto.LoginInfoDTO;
-import com.zty.framework.util.ReflectUtil;
 
 /**
  * 用户进件详情
@@ -22,9 +20,8 @@ public class CertificateDetailDTO {
 
     private List<FileInfoDO.FileMsg> certificateFiles;
 
-    public CertificateDetailDTO(AccountInfoDO accountInfoDO, UserInfoDO userInfoDO, List<FileInfoDO> certificateFiles) throws IllegalAccessException, InstantiationException {
-        this.accountInfo = (LoginInfoDTO) ReflectUtil.propertyMapper(accountInfoDO,
-                AccountInfoDO.class, LoginInfoDTO.class);
+    public CertificateDetailDTO(LoginInfoDTO accountInfoDO, UserInfoDO userInfoDO, List<FileInfoDO> certificateFiles) {
+        this.accountInfo = accountInfoDO;
         this.userInfo = userInfoDO;
         this.certificateFiles = certificateFiles.stream()
                 .map(FileInfoDO::parseFileMsg)

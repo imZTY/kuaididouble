@@ -18,9 +18,7 @@ import com.zty.kuaididouble.third.AbstractCustomizedService;
  */
 @Service("Yunda_Customized")
 public class YundaCustomizedService extends AbstractCustomizedService {
-
-
-
+    
     public void queryLocationTest() throws OpenapiException {
         //接口地址 测试地址
         final String serverUrl = "https://devkyweixin.yundasys.com/openapi/outer/logictis/query";

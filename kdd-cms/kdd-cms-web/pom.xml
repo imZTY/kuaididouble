@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>com.zty.kuaididouble</groupId>
-            <artifactId>kdd-core-facade</artifactId>
+            <artifactId>kdd-core-service</artifactId>
             <version>${kuaididouble.version}</version>
         </dependency>
     </dependencies>

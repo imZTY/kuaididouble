@@ -2,7 +2,9 @@ package com.zty.kdd.DO;
 
 import java.util.Date;
 
-public class SecretKeyInfoDO {
+import com.zty.framework.dto.DataDTO;
+
+public class SecretKeyInfoDO extends DataDTO {
     private Integer id;
 
     private String customerCode;

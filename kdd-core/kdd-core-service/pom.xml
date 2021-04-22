@@ -25,11 +25,5 @@
             <version>${kuaididouble.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.zty.kuaididouble</groupId>
-            <artifactId>kdd-third-yunda</artifactId>
-            <version>${kuaididouble.version}</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 </project>

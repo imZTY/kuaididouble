@@ -103,9 +103,9 @@ public class LoginCheck {
             return joinPoint.proceed(originArgs);
         } catch (Throwable throwable) {  // 若原方法执行出错，这里也可以截取到异常
             // log.error("系统出错：", throwable);
-            throwable.printStackTrace();
             log.error("RuntimeException ", throwable);
-            return ResultDTO.error(500,"系统异常");
+            return ResultDTO.error(500,
+                    StringUtils.isBlank(throwable.getMessage()) ? "系统异常" : throwable.getMessage());
         }
     }
 }

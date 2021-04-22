@@ -2,7 +2,9 @@ package com.zty.kdd.DO;
 
 import java.util.Date;
 
-public class OrderInfoDO {
+import com.zty.framework.dto.DataDTO;
+
+public class OrderInfoDO extends DataDTO {
     private Integer id;
 
     private Integer accountId;

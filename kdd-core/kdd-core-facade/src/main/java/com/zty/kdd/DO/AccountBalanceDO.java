@@ -1,6 +1,8 @@
 package com.zty.kdd.DO;
 
-public class AccountBalanceDO {
+import com.zty.framework.dto.DataDTO;
+
+public class AccountBalanceDO extends DataDTO {
     private Integer accountId;
 
     private Long totalBalance;

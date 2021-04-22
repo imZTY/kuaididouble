@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@MapperScan(basePackages = {"com.zty.bo.dao"})
+@MapperScan(basePackages = {"com.zty.bo.dao", "com.zty.kdd.dao"})
 @ComponentScan(basePackages = {"com.zty"})
 public class KddAllInOneApplication {
 
