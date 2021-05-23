@@ -32,9 +32,10 @@ public class MaptrackApiImpl implements MaptrackApi {
     @Override
     public MaptrackQueryRespAO singleQuery(MaptrackQueryReqAO reqAO) throws UnsupportedEncodingException {
         MaptrackQueryRespAO maptrackQueryRespAO = new MaptrackQueryRespAO();
+        // TODO 扣减余额
         String result = shunfengSDKService.query(
                 null,
-                shunfengSDKService.getReqBody(new ThirdQueryDTO(reqAO.getParam().getNum()))
+                shunfengSDKService.getReqBody(new ThirdQueryDTO(reqAO.getParamObj().getNum()))
         );
         ShunFengResp respObj = JSON.parseObject(result, ShunFengResp.class);
         if ("A1000".equals(respObj.getApiResultCode())) {
@@ -43,8 +44,8 @@ public class MaptrackApiImpl implements MaptrackApi {
             // 单个查询，只取第一条内容
             MsgDataDTO.RouteRespsDTO transRouteMsg = respData.getRouteResps().get(0);
             // 拼装出参
-            maptrackQueryRespAO.setCom(reqAO.getParam().getCom());
-            maptrackQueryRespAO.setNu(reqAO.getParam().getNum());
+            maptrackQueryRespAO.setCom(reqAO.getParamObj().getCom());
+            maptrackQueryRespAO.setNu(reqAO.getParamObj().getNum());
             // 将顺丰的最新操作码，映射成快递100标准的状态码
             TransStatusEnum transStatusEnum = parseShunFengOpCode(transRouteMsg.getNewestOpCode());
             maptrackQueryRespAO.setState(transStatusEnum.getStringValue());

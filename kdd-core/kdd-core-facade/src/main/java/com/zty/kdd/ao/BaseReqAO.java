@@ -19,7 +19,17 @@ public abstract class BaseReqAO extends DataDTO {
      */
     private String sign;
 
-    public abstract String getParamStr();
+    private String param;
+
+    public abstract void setParamObj(String paramJson);
+
+    public String getParam() {
+        return param;
+    }
+
+    public void setParam(String param) {
+        this.param = param;
+    }
 
     public String getCustomer() {
         return customer;

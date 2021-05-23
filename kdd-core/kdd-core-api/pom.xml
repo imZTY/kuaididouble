@@ -35,7 +35,7 @@
         <!-- kdd依赖 -->
         <dependency>
             <groupId>com.zty.kuaididouble</groupId>
-            <artifactId>kdd-core-facade</artifactId>
+            <artifactId>kdd-core-service</artifactId>
             <version>${kuaididouble.version}</version>
         </dependency>
         <dependency>
@@ -43,6 +43,12 @@
             <artifactId>kdd-third-sf</artifactId>
             <version>${kuaididouble.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kuaidi100-api</groupId>
+            <artifactId>sdk</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

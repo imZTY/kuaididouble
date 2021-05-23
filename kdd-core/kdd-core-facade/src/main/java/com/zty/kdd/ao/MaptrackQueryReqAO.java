@@ -1,6 +1,6 @@
 package com.zty.kdd.ao;
 
-import com.google.gson.Gson;
+import com.alibaba.fastjson.JSON;
 
 /**
  * @author tianyi
@@ -11,19 +11,15 @@ public class MaptrackQueryReqAO extends BaseReqAO {
     /**
      * 查询参数
      */
-    private QueryParam param;
+    private QueryParam paramObj;
 
-    public QueryParam getParam() {
-        return param;
-    }
-
-    public void setParam(QueryParam param) {
-        this.param = param;
+    public QueryParam getParamObj() {
+        return paramObj;
     }
 
     @Override
-    public String getParamStr() {
-        return new Gson().toJson(this.param);
+    public void setParamObj(String paramJson) {
+        this.paramObj = JSON.parseObject(paramJson, QueryParam.class);
     }
 
     public static class QueryParam{

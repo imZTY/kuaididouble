@@ -85,6 +85,11 @@ public class SecretKeyServiceImpl implements SecretKeyService {
      */
     @Override
     public SecretKeyInfoDO getSecretByCustomerCode(SecretKeyInfoDO secretKeyInfoDO) {
-        return null;
+        SecretKeyInfoDOExample example = new SecretKeyInfoDOExample();
+        example.createCriteria()
+                .andCustomerCodeEqualTo(secretKeyInfoDO.getCustomerCode())
+                .andDisabledEqualTo((byte) 0);
+        List<SecretKeyInfoDO> resultList = secretKeyInfoDOMapper.selectByExample(example);
+        return resultList.size() > 0 ? resultList.get(0) : null;
     }
 }
