@@ -1,4 +1,4 @@
-package com.zty.kuaididouble.third;
+package com.zty.kdd.third.service;
 
 /**
  * Retrofit抽象服务类

@@ -5,7 +5,7 @@ package com.zty.kdd.enums;
  * @author tianyi
  * @date 2021-02-28 21:33
  */
-public enum StateEnum {
+public enum TransStatusEnum {
     ON_THE_WAY(0, "在途"),
     COLLECT(1, "揽件"),
     PUZZLE(2, "疑难"),
@@ -19,19 +19,23 @@ public enum StateEnum {
     CLEARED(12, "已清关"),
     CLEAR_ERROR(13, "清关异常"),
     REJECT(14, "拒签"),
+    UNKNOW(-1, "未知")
     ;
 
     private Integer value;
 
     private String name;
 
-    StateEnum(Integer value, String name) {
+    TransStatusEnum(Integer value, String name) {
         this.value = value;
         this.name = name;
     }
 
     public Integer getValue() {
         return value;
+    }
+    public String getStringValue() {
+        return String.valueOf(value);
     }
 
     public void setValue(Integer value) {

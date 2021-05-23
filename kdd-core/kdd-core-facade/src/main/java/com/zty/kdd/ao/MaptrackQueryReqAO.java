@@ -1,44 +1,17 @@
 package com.zty.kdd.ao;
 
-import com.zty.framework.dto.DataDTO;
+import com.google.gson.Gson;
 
 /**
  * @author tianyi
  * @date 2021-02-23 03:33
  */
-public class MaptrackQueryReqAO extends DataDTO {
-
-    /**
-     * 授权码，请申请企业版获取
-     */
-    private String customer;
-
-    /**
-     * 签名， 用于验证身份， 按param + key + customer 的顺序进行MD5加密
-     * （注意加密后字符串一定要转32位大写）， 不需要加上“+”号
-     */
-    private String sign;
+public class MaptrackQueryReqAO extends BaseReqAO {
 
     /**
      * 查询参数
      */
     private QueryParam param;
-
-    public String getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(String customer) {
-        this.customer = customer;
-    }
-
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
 
     public QueryParam getParam() {
         return param;
@@ -46,6 +19,11 @@ public class MaptrackQueryReqAO extends DataDTO {
 
     public void setParam(QueryParam param) {
         this.param = param;
+    }
+
+    @Override
+    public String getParamStr() {
+        return new Gson().toJson(this.param);
     }
 
     public static class QueryParam{

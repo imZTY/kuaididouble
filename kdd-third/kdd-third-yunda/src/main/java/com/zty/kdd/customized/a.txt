@@ -10,7 +10,7 @@ import com.yundasys.api.request.OpenApiDefaultRequest;
 import com.yundasys.api.response.OpenApiDefaultResponse;
 import org.springframework.stereotype.Service;
 
-import com.zty.kuaididouble.third.AbstractCustomizedService;
+import AbstractSDKService;
 
 /**
  * @author tianyi

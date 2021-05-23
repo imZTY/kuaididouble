@@ -31,7 +31,7 @@ import com.zty.framework.annotation.CheckToken;
 import com.zty.framework.dto.ResultDTO;
 import com.zty.framework.util.ReflectUtil;
 import com.zty.kdd.ao.DealCheckRequest;
-import com.zty.kdd.dto.CertificateDetailDTO;
+import com.zty.kdd.request.CertificateDetailDTO;
 
 /**
  * 进件报备

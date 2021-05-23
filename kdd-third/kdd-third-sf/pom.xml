@@ -25,6 +25,11 @@
             <version>${kuaididouble.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sf.csim</groupId>
+            <artifactId>SF-CSIM-EXPRESS-SDK</artifactId>
+            <version>2.1.1</version>
+        </dependency>
     </dependencies>
 
     <build>

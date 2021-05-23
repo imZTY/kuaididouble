@@ -28,6 +28,10 @@ public enum StatusCodeEnum {
         return code;
     }
 
+    public String getStringCode() {
+        return String.valueOf(code);
+    }
+
     public void setCode(Integer code) {
         this.code = code;
     }

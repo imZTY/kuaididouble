@@ -1,5 +1,7 @@
 package com.zty.kdd.api;
 
+import java.io.UnsupportedEncodingException;
+
 import com.zty.kdd.ao.MaptrackQueryReqAO;
 import com.zty.kdd.ao.MaptrackQueryRespAO;
 
@@ -10,6 +12,6 @@ import com.zty.kdd.ao.MaptrackQueryRespAO;
  */
 public interface MaptrackApi {
 
-    public MaptrackQueryRespAO query(MaptrackQueryReqAO reqAO);
+    public MaptrackQueryRespAO singleQuery(MaptrackQueryReqAO reqAO) throws UnsupportedEncodingException;
 
 }

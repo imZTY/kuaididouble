@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
 
     <modules>
-<!--        <module>kdd-third</module>-->
+        <module>kdd-third</module>
         <module>kdd-core</module>
         <module>kdd-cms</module>
         <module>kdd-app</module>

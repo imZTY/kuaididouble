@@ -12,12 +12,12 @@
     <artifactId>kdd-third</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>kdd-third-yunda</module>
-        <module>kdd-third-yuantong</module>
         <module>kdd-third-facade</module>
-<!--        <module>kdd-third-sf</module>-->
-        <module>kdd-third-800best</module>
-        <module>kdd-third-zto</module>
+<!--        <module>kdd-third-yunda</module>-->
+<!--        <module>kdd-third-yuantong</module>-->
+        <module>kdd-third-sf</module>
+<!--        <module>kdd-third-800best</module>-->
+<!--        <module>kdd-third-zto</module>-->
 <!--        <module>kdd-third-uce</module>-->
     </modules>
 

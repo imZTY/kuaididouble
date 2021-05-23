@@ -2,7 +2,7 @@ package com.zty.kdd.yunda.service;
 
 import org.springframework.stereotype.Service;
 
-import com.zty.kuaididouble.third.AbstractRetrofitService;
+import com.zty.kdd.third.service.AbstractRetrofitService;
 
 /**
  * @author tianyi

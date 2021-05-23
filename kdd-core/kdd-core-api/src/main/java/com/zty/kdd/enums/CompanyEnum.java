@@ -1,14 +1,13 @@
 package com.zty.kdd.enums;
 
 import com.zty.framework.third.RetrofitService;
-import com.zty.kdd.yunda.service.YundaRetrofitService;
 
 /**
  * @author tianyi
  * @date 2021-02-28 22:28
  */
 public enum CompanyEnum {
-    YUNDA("", "", YundaRetrofitService.class),
+
     ;
 
     private String name;

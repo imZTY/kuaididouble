@@ -12,12 +12,27 @@
     <artifactId>kdd-core-api</artifactId>
 
     <dependencies>
+        <!-- 内部依赖 -->
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>framework-springboot-app</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.zty</groupId>
             <artifactId>framework-web</artifactId>
             <version>${zty-wheels.version}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- 内部插件 -->
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>redis-bo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>account-bo</artifactId>
+        </dependency>
+        <!-- kdd依赖 -->
         <dependency>
             <groupId>com.zty.kuaididouble</groupId>
             <artifactId>kdd-core-facade</artifactId>
@@ -25,9 +40,18 @@
         </dependency>
         <dependency>
             <groupId>com.zty.kuaididouble</groupId>
-            <artifactId>kdd-third-yunda</artifactId>
+            <artifactId>kdd-third-sf</artifactId>
             <version>${kuaididouble.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

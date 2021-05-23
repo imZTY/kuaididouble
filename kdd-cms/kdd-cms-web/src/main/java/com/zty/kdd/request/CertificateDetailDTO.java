@@ -1,4 +1,4 @@
-package com.zty.kdd.dto;
+package com.zty.kdd.request;
 
 import java.util.List;
 import java.util.stream.Collectors;
