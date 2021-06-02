@@ -18,12 +18,12 @@
             <artifactId>framework-common</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.zty.kuaididouble</groupId>
-            <artifactId>kdd-third-facade</artifactId>
-            <version>${kuaididouble.version}</version>
-            <scope>compile</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.zty.kuaididouble</groupId>-->
+<!--            <artifactId>kdd-third-facade</artifactId>-->
+<!--            <version>${kuaididouble.version}</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>

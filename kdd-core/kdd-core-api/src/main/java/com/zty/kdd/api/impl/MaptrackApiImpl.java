@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
 import com.zty.kdd.ao.MaptrackQueryReqAO;
@@ -13,7 +14,7 @@ import com.zty.kdd.ao.MaptrackQueryRespAO;
 import com.zty.kdd.api.MaptrackApi;
 import com.zty.kdd.enums.StatusCodeEnum;
 import com.zty.kdd.enums.TransStatusEnum;
-import com.zty.kdd.third.dto.ThirdQueryDTO;
+import com.zty.kdd.third.dto.SFThirdQueryDTO;
 import com.zty.kdd.third.enums.ThirdTransStatusEnum;
 import com.zty.kdd.third.resp.MsgDataDTO;
 import com.zty.kdd.third.resp.ShunFengResp;
@@ -35,12 +36,20 @@ public class MaptrackApiImpl implements MaptrackApi {
         // TODO 扣减余额
         String result = shunfengSDKService.query(
                 null,
-                shunfengSDKService.getReqBody(new ThirdQueryDTO(reqAO.getParamObj().getNum()))
+                shunfengSDKService.getReqBody(new SFThirdQueryDTO(reqAO.getParamObj()))
         );
         ShunFengResp respObj = JSON.parseObject(result, ShunFengResp.class);
         if ("A1000".equals(respObj.getApiResultCode())) {
-            // 成功响应，解析响应报文，拼装出参
-            MsgDataDTO respData = respObj.getApiResultData().getMsgData();
+            // 通信成功，再检查一下业务是否成功
+            ShunFengResp.ResultData apiResultData = respObj.getApiResultData();
+            if (BooleanUtils.isNotTrue(apiResultData.getSuccess())) {
+                maptrackQueryRespAO.setState(apiResultData.getErrorCode());
+                maptrackQueryRespAO.setCondition("第三方业务响应失败");
+                maptrackQueryRespAO.setStatus(StatusCodeEnum.QUERY_FAIL.getStringCode());
+                maptrackQueryRespAO.setMessage(JSON.toJSONString(apiResultData));
+            }
+            // 解析响应报文，拼装出参
+            MsgDataDTO respData = apiResultData.getMsgData();
             // 单个查询，只取第一条内容
             MsgDataDTO.RouteRespsDTO transRouteMsg = respData.getRouteResps().get(0);
             // 拼装出参

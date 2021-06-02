@@ -17,6 +17,12 @@ public abstract class AbstractSDKService {
 
     public abstract Object getHeaders(Map<String, Object> headers);
 
+    /**
+     * 转换时，注意Object后续的用法
+     * @param thirdQueryDTO
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     public abstract Map<String, Object> getReqBody(ThirdQueryDTO thirdQueryDTO) throws UnsupportedEncodingException;
 
     public abstract String query(Map<String, Object> headers,

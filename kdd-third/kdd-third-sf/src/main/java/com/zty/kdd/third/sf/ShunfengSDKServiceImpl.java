@@ -1,6 +1,7 @@
 package com.zty.kdd.third.sf;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.zty.kdd.third.dto.SFThirdQueryDTO;
 import com.zty.kdd.third.dto.ThirdQueryDTO;
 import com.zty.kdd.third.enums.ThirdTransStatusEnum;
 import com.zty.kdd.third.service.AbstractSDKService;
@@ -109,11 +111,17 @@ public class ShunfengSDKServiceImpl extends AbstractSDKService {
 
     @Override
     public Map<String, Object> getReqBody(ThirdQueryDTO thirdQueryDTO) {
+        if (!(thirdQueryDTO instanceof SFThirdQueryDTO)) {
+            throw new RuntimeException("third层异常，入参不是SF类");
+        }
         Map<String, Object> params = new HashMap<>();
         params.put("language", "0");
         params.put("trackingType", "1");
         params.put("methodType", "1");
-        params.put("trackingNumber", "[\""+thirdQueryDTO.getTransOrderNo()+"\"]");
+        params.put("trackingNumber", Collections.singletonList(thirdQueryDTO.getTransOrderNo()));
+        params.put("checkPhoneNo", thirdQueryDTO.getPhone().substring(
+                thirdQueryDTO.getPhone().length() - 4
+        ));
         return params;
     }
 
