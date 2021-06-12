@@ -128,4 +128,9 @@ public class MaptrackQueryReqAO extends BaseReqAO {
             this.orderTime = orderTime;
         }
     }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 }

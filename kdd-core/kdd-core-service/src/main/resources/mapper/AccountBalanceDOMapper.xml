@@ -209,4 +209,28 @@
       pre_salty = #{preSalty,jdbcType=VARCHAR}
     where account_id = #{accountId,jdbcType=INTEGER}
   </update>
+  <!-- 冻结 -->
+  <update id="checkAndFrozen" parameterType="com.zty.kdd.DO.AccountBalanceDO">
+    update account_balance
+    set available_balance = available_balance - 1,
+        frozen_balance = frozen_balance + 1
+    where account_id = #{accountId,jdbcType=INTEGER}
+        and available_balance > 0
+  </update>
+  <!-- 解冻 -->
+  <update id="checkAndUnfrozen" parameterType="com.zty.kdd.DO.AccountBalanceDO">
+    update account_balance
+    set available_balance = available_balance + 1,
+        frozen_balance = frozen_balance - 1
+        where account_id = #{accountId,jdbcType=INTEGER}
+          and available_balance > 0
+  </update>
+  <!-- 实扣 -->
+  <update id="checkAndCut" parameterType="com.zty.kdd.DO.AccountBalanceDO">
+    update account_balance
+    set total_balance = total_balance - 1,
+        frozen_balance = frozen_balance - 1
+        where account_id = #{accountId,jdbcType=INTEGER}
+          and available_balance > 0
+  </update>
 </mapper>

@@ -14,8 +14,8 @@ import com.zty.kdd.DO.AccountBalanceDO;
 import com.zty.kdd.DO.OrderInfoDO;
 import com.zty.kdd.DO.example.OrderInfoDOExample;
 import com.zty.kdd.constant.OrderStatus;
-import com.zty.kdd.dao.AccountBalanceDOMapper;
 import com.zty.kdd.dao.OrderInfoDOMapper;
+import com.zty.kdd.service.BalanceService;
 import com.zty.kdd.service.OrderService;
 
 /**
@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderInfoDOMapper orderInfoDOMapper;
 
     @Autowired
-    private AccountBalanceDOMapper accountBalanceDOMapper;
+    private BalanceService balanceService;
 
     /**
      * 事务充值
@@ -54,11 +54,11 @@ public class OrderServiceImpl implements OrderService {
         orderInfoDO.setCreateTime(new Date());
         orderInfoDOMapper.insertSelective(orderInfoDO);
         // 修改余额
-        AccountBalanceDO accountBalanceDO = accountBalanceDOMapper.selectByPrimaryKey(orderInfoDO.getAccountId());
+        AccountBalanceDO accountBalanceDO = balanceService.singleQuery(new AccountBalanceDO().accountId(orderInfoDO.getAccountId()));
         accountBalanceDO.setTotalBalance(accountBalanceDO.getTotalBalance() + orderInfoDO.getBalanceChange());
         accountBalanceDO.setAvailableBalance(accountBalanceDO.getAvailableBalance() + orderInfoDO.getBalanceChange());
         accountBalanceDO.setPreSalty(System.currentTimeMillis()+"");
-        int rows  = accountBalanceDOMapper.updateByPrimaryKey(accountBalanceDO);
+        int rows  = balanceService.update(accountBalanceDO);
         if (rows != 1) {
             throw new Exception("充值异常，修改余额失败");
         }

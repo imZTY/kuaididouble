@@ -74,6 +74,7 @@ public class SignCheck {
             if (sign.equals(reqAO.getSign())) {
                 try {
                     reqAO.setParamObj(param);
+                    reqAO.setCurrentUID(keyResult.getAccountId());
                     originArgs[0] = reqAO;
                     return joinPoint.proceed(originArgs);
                 } catch (Throwable throwable) {  // 若原方法执行出错，这里也可以截取到异常

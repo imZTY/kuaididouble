@@ -8,16 +8,16 @@ import com.zty.framework.third.RetrofitService;
  */
 public enum CompanyEnum {
 
-    ;
+    SHUNFENG("顺丰速运", (byte)1, null);
 
     private String name;
 
-    private String code;
+    private Byte code;
 
     // FIXME: 2021/2/28 如何使用泛型来管理
     private Class retrofitService;
 
-    CompanyEnum(String name, String code, Class retrofitService) {
+    CompanyEnum(String name, Byte code, Class retrofitService) {
         this.name = name;
         this.code = code;
         this.retrofitService = retrofitService;
@@ -31,11 +31,11 @@ public enum CompanyEnum {
         this.name = name;
     }
 
-    public String getCode() {
+    public Byte getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Byte code) {
         this.code = code;
     }
 

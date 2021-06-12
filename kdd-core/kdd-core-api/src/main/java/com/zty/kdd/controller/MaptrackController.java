@@ -1,7 +1,5 @@
 package com.zty.kdd.controller;
 
-import java.io.UnsupportedEncodingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +23,7 @@ public class MaptrackController {
 
     @CheckSign
     @RequestMapping(value =  "/query", method = {RequestMethod.POST ,RequestMethod.GET })
-    public ResultDTO query(MaptrackQueryReqAO reqAO) throws UnsupportedEncodingException {
+    public ResultDTO query(MaptrackQueryReqAO reqAO) throws Exception {
         return ResultDTO.success(maptrackApi.singleQuery(reqAO));
     }
 

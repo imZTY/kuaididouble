@@ -12,6 +12,6 @@ import com.zty.kdd.ao.MaptrackQueryRespAO;
  */
 public interface MaptrackApi {
 
-    public MaptrackQueryRespAO singleQuery(MaptrackQueryReqAO reqAO) throws UnsupportedEncodingException;
+    public MaptrackQueryRespAO singleQuery(MaptrackQueryReqAO reqAO) throws Exception;
 
 }

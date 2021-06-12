@@ -24,6 +24,12 @@ public class SfTest {
     private static final String queryUrl = "https://sfapi-sbox.sf-express.com/std/service";
 
     @Test
+    public void subString() {
+        String str = "{\"success\":true,\"err";
+        System.out.println(str.substring(0, 512));
+    }
+
+    @Test
     public void order() {
         String str = "{\"success\":true,\"errorCode\":\"S0000\",\"errorMsg\":null,\"msgData\":{\"routeResps\":[{\"mailNo\":\"444003077898\",\"routes\":[{\"acceptAddress\":\"深圳市\",\"acceptTime\":\"2021-05-05 22:46:12\",\"remark\":\"顺丰速运 已收取快件\",\"opCode\":\"50\"}]},{\"mailNo\":\"441003077850\",\"routes\":[{\"acceptAddress\":\"深圳市\",\"acceptTime\":\"2021-05-05 22:46:12\",\"remark\":\"顺丰速运 已收取快件\",\"opCode\":\"50\"}]}]}}";
         System.out.println(str);

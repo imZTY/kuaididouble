@@ -25,6 +25,26 @@ public class TransQueryLogDO extends DataDTO {
 
     private Date createTime;
 
+    public TransQueryLogDO thirdApiCompany(Byte thirdApiCompany) {
+        this.thirdApiCompany = thirdApiCompany;
+        return this;
+    }
+
+    public TransQueryLogDO accountId(Integer accountId) {
+        this.accountId = accountId;
+        return this;
+    }
+
+    public TransQueryLogDO requestMsg(String requestMsg) {
+        this.requestMsg = requestMsg;
+        return this;
+    }
+
+    public TransQueryLogDO createTime(Date createTime) {
+        this.createTime = createTime;
+        return this;
+    }
+
     public Integer getId() {
         return id;
     }

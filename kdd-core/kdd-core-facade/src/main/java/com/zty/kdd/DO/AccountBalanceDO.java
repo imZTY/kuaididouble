@@ -13,6 +13,11 @@ public class AccountBalanceDO extends DataDTO {
 
     private String preSalty;
 
+    public AccountBalanceDO accountId(Integer accountId) {
+        setAccountId(accountId);
+        return this;
+    };
+
     public Integer getAccountId() {
         return accountId;
     }
