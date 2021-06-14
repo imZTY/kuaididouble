@@ -37,58 +37,6 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  // {
-  //   path: '/file',
-  //   component: Layout,
-  //   redirect: '/file/index',
-  //   meta: { role: [1, 2, 3] },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/upload/index'),
-  //       name: 'Upload',
-  //       meta: {
-  //         title: '文件管理',
-  //         icon: 'document',
-  //         affix: true,
-  //         role: [1, 2, 3]
-  //       }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/model',
-  //   component: Layout,
-  //   redirect: '/model/index',
-  //   meta: { role: [1, 2, 3] },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: () => import('@/views/model/index'),
-  //       name: 'Model',
-  //       meta: {
-  //         title: '模型管理',
-  //         icon: 'model',
-  //         affix: true,
-  //         role: [1, 2, 3]
-  //       }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/interface',
-  //   redirect: '/interface/index',
-  //   component: Layout,
-  //   meta: { role: [1, 2, 3] },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Interface',
-  //       component: () => import('@/views/interface/index'),
-  //       meta: { title: '接口管理', icon: 'interface', role: [1, 2, 3] }
-  //     }
-  //   ]
-  // },
   {
     path: '/certificate',
     redirect: '/certificate/index',
@@ -99,7 +47,35 @@ export const asyncRouterMap = [
         path: 'index',
         name: 'certificate',
         component: () => import('@/views/certificate/index'),
-        meta: { title: '进件审核', icon: 'interface', role: [1, 4] }
+        meta: { title: '进件审核', icon: 'certificate', role: [1, 4] }
+      }
+    ]
+  },
+  {
+    path: '/order',
+    redirect: '/order/index',
+    component: Layout,
+    meta: { role: [1, 4] },
+    children: [
+      {
+        path: 'index',
+        name: 'order',
+        component: () => import('@/views/order/index'),
+        meta: { title: '订单记录', icon: 'charge-order', role: [1, 4] }
+      }
+    ]
+  },
+  {
+    path: '/history',
+    redirect: '/history/index',
+    component: Layout,
+    meta: { role: [1, 3, 4] },
+    children: [
+      {
+        path: 'index',
+        name: 'history',
+        component: () => import('@/views/history/index'),
+        meta: { title: '请求记录', icon: 'query-log', role: [1, 3, 4] }
       }
     ]
   },

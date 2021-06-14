@@ -15,6 +15,7 @@ import com.zty.framework.annotation.CheckToken;
 import com.zty.framework.dto.ResultDTO;
 import com.zty.kdd.DO.OrderInfoDO;
 import com.zty.kdd.constant.OrderMethod;
+import com.zty.kdd.constant.OrderType;
 import com.zty.kdd.service.OrderService;
 
 /**
@@ -46,11 +47,51 @@ public class OrderController {
             return ResultDTO.error(403, "当前账号无权操作");
         } else {
             // 参数检查
-            if (orderInfoDO.getOrderMethod() != OrderMethod.ADMIN) {
+            if (orderInfoDO.getOrderMethod() == null) {
+                return ResultDTO.error(403, "未传入充值方式");
+            }
+            if (!OrderMethod.contains(orderInfoDO.getOrderMethod())) {
                 return ResultDTO.error(403, "不支持该充值方式");
             }
             if (orderInfoDO.getOrderType() == null) {
-                return ResultDTO.error(403, "未传入充值方式");
+                return ResultDTO.error(403, "未传入订单类型");
+            }
+            if (orderInfoDO.getAccountId() == null) {
+                return ResultDTO.error(403, "未传入充值账户ID");
+            }
+            // 根据订单类型（充值/退款）分别进行处理
+            if (OrderType.CHARGE == orderInfoDO.getOrderType()) {
+                // 充值
+                if (orderInfoDO.getThirdOrderNo() == null) {
+                    return ResultDTO.error(403, "未传入第三方订单号");
+                }
+                if (orderInfoDO.getOrderAmount() == null) {
+                    return ResultDTO.error(403, "未传入订单总金额");
+                }
+                if (orderInfoDO.getActualAmount() == null) {
+                    return ResultDTO.error(403, "未传入实付金额");
+                }
+                if (orderInfoDO.getBalanceChange() == null) {
+                    return ResultDTO.error(403, "未传入充值条数");
+                }
+                // 检查充值订单是否已存在
+                OrderInfoDO existedOrder = orderService.checkAndGetCharge(orderInfoDO);
+                if (existedOrder != null) {
+                    return ResultDTO.error(403, "充值订单已存在", orderInfoDO);
+                }
+            } else if (OrderType.REFUND == orderInfoDO.getOrderType()) {
+                // 退款
+                if (orderInfoDO.getId() == null) {
+                    return ResultDTO.error(403, "未传入订单ID");
+                }
+                // 检查退款订单是否已存在
+                OrderInfoDO existedOrder = orderService.checkAndGetRefund(orderInfoDO);
+                if (existedOrder != null) {
+                    return ResultDTO.error(403, "退款订单已存在", orderInfoDO);
+                }
+            } else {
+                // 无法识别
+                return ResultDTO.error(403, "无法识别订单类型");
             }
             // 调用事务充值方法（先创建订单，再改余额）
             orderInfoDO.setCreateBy(currentUID);

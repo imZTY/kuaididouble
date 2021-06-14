@@ -25,11 +25,11 @@
             <p>{{ scope.row.disabled?'禁用':'启用' }}</p>
           </template>
         </el-table-column>
-        <el-table-column fixed='right' label='操作' width='280px' align='center'>
+        <el-table-column fixed='right' label='操作' align='center'>
           <template slot-scope='scope'>
             <el-button type='info' size='mini' @click='viewDetail(scope.row)'>查看详情</el-button>
             <el-button type='primary' size='mini' @click='editUser(scope.row)'>编辑</el-button>
-            <el-button type='warning' size='mini' @click='delUser(scope.row)'>充值</el-button>
+            <el-button type='warning' size='mini' @click='charge(scope.row)'>充值</el-button>
             <el-button type='danger' size='mini' @click='editPassword(scope.row)'>重置密码</el-button>
           </template>
         </el-table-column>
@@ -51,108 +51,53 @@
       @refresh='init(1)'
     />
     <edit-user
-      :add-modal-visible='editModalVisible'
+      :edit-modal-visible='editModalVisible'
       :role-list='roleList'
       :form='form'
       @cancel='cancel'
       @refresh='init(1)'
     />
     <edit-password
-      :add-modal-visible='editPwModalVisible'
+      :edit-pw-modal-visible='editPwModalVisible'
       :role-list='roleList'
       :form='form'
       @cancel='cancel'
       @refresh='init(1)'
     />
 
-    
-    <!-- 进件审核对话框 -->
-    <el-dialog
-      title="进件审核"
-      :visible.sync="detailDialogVisible"
-      width="60%"
-      :before-close="detailDialogClose"
-    >
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">法人姓名</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.name}}</span>
-      </div>
-       <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">证件类型</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.cardType == 1 ? '身份证' : '其他'}}</span>
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">证件号</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.cardNo}}</span>
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">联系电话</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.phone}}</span>
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">联系Email</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.email}}</span>
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">用户职位</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.job}}</span>
-      </div>
-
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">公司名称</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.organization}}</span>
-      </div>
-       <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">公司所在城市</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.city}}</span>
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">公司详细地址</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.address}}</span>
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">身份证正面</span>
-        <img :src="checkParam.idcardFront"  min-width="70" height="70" />
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">身份证背面</span>
-        <img :src="checkParam.idcardBack"  min-width="70" height="70" />
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">营业执照</span>
-        <img :src="checkParam.businessLicense"  min-width="70" height="70" />
-      </div>
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">修改时间</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.updateTime}}</span>
-      </div>
-
-      <div style="display: flex;align-items: center;margin: 16px;">
-        <span style="width: 30%;text-align: center;">备注信息</span>
-        <span style="width: 70%;text-align: left;">{{checkParam.description}}</span>
-      </div>
-
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="detailDialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
+    <detail-dialog
+      :detail-dialog-visible='detailDialogVisible'
+      :check-param='checkParam'
+      @cancel='cancel'
+      @refresh='init(1)'
+    />
+    <charge-dialog
+      :charge-modal-visible='chargeModalVisible'
+      :form='form'
+      @cancel='cancel'
+      @refresh='init(1)'
+    />
   </div>
 </template>
 
 <script>
-import { getDetail } from "@/api/certificate";
-import { getUserList, reqDelUser } from '@/api/user';
-import { getRoleList } from '@/api/role';
-import { Message } from 'element-ui';
-import AddUser from './components/addUser';
-import EditUser from './components/editUser';
-import EditPassword from './components/editPassword';
+import { getDetail } from "@/api/certificate"
+import { getUserList, reqDelUser } from '@/api/user'
+import { getRoleList } from '@/api/role'
+import { Message } from 'element-ui'
+import AddUser from './components/addUser'
+import EditUser from './components/editUser'
+import EditPassword from './components/editPassword'
+import ChargeDialog from './components/chargeDialog'
+import DetailDialog from './components/detailDialog'
 export default {
   name: '',
   components: {
     AddUser,
     EditUser,
-    EditPassword
+    EditPassword,
+    DetailDialog,
+    ChargeDialog
   },
   data() {
     return {
@@ -160,6 +105,7 @@ export default {
       addModalVisible: false,
       editModalVisible: false,
       editPwModalVisible: false,
+      chargeModalVisible: false,
       userList: [],
       form: {},
       total: 0,
@@ -188,24 +134,33 @@ export default {
   mounted() {
     this.init(1);
     getRoleList({ page: 1, rows: 1000 }).then(res => {
-      this.roleList = res.data.data;
+      this.roleList = res.data.data
     });
   },
   methods: {
     init(page) {
       getUserList({ page, rows: 10 }).then(res => {
-        this.userList = res.data.data;
-        this.total = res.data.count;
+        this.userList = res.data.data
+        this.total = res.data.count
       })
     },
+    charge(row) {
+      this.form = {
+        accountId: row.id,
+        orderType: 1
+      }
+      this.chargeModalVisible = true
+    },
     cancel() {
-      this.addModalVisible = false;
-      this.editModalVisible = false;
-      this.editPwModalVisible = false;
+      this.addModalVisible = false
+      this.editModalVisible = false
+      this.editPwModalVisible = false
+      this.detailDialogVisible = false
+      this.chargeModalVisible = false
     },
     editUser(row) {
-      let disable = '0';
-      if (row.disable) disable = '1';
+      let disable = '0'
+      if (row.disable) disable = '1'
       this.form = {
         id: row.id,
         accountId: row.id,
@@ -215,11 +170,11 @@ export default {
         roleId: row.roleId.toString(),
         remark: row.remark
       }
-      this.editModalVisible = true;
+      this.editModalVisible = true
     },
     editPassword(row) {
-      let disabled = '0';
-      if (row.disabled) disabled = '1';
+      let disabled = '0'
+      if (row.disabled) disabled = '1'
       this.form = {
         id: row.id,
         name: row.name,
@@ -229,12 +184,12 @@ export default {
         roleId: row.roleId.toString(),
         remark: row.remark
       }
-      this.editPwModalVisible = true;
+      this.editPwModalVisible = true
     },
     delUser(info) {
       reqDelUser({ id: info.id }).then(res => {
-        this.init(1);
-        Message.success('删除成功!');
+        this.init(1)
+        Message.success('删除成功!')
       })
     },
     changePage(e) {
@@ -242,27 +197,25 @@ export default {
     },
     // 查看详情
     viewDetail(row) {
-      //显示修改对话框
       // console.log(index,row)
-      this.detailDialogVisible = true;
-      var that = this;
+      var that = this
       getDetail({
-        accountId: row.id 
+        accountId: row.id
       }).then(
         function(res) {
           // success
-          console.log('getDetail ',res.data.data)
+          console.log('getDetail ', res.data.data)
           var detailResp = res.data.data
           // 按文件类型获取图片url
-          var idcardFront = '';
-          var idcardBack = '';
-          var businessLicense = '';
+          var idcardFront = ''
+          var idcardBack = ''
+          var businessLicense = ''
           for (let i = 0; i < detailResp.certificateFiles.length; i++) {
-            const certificateFile = detailResp.certificateFiles[i];
-            if (certificateFile.fileKind == 1) {
+            const certificateFile = detailResp.certificateFiles[i]
+            if (certificateFile.fileKind === 1) {
               // 身份证正面
               idcardFront = certificateFile.path
-            } else if (certificateFile.fileKind == 2) {
+            } else if (certificateFile.fileKind === 2) {
               // 身份证反面
               idcardBack = certificateFile.path
             } else {
@@ -286,21 +239,20 @@ export default {
           that.checkParam.idcardFront = idcardFront
           that.checkParam.idcardBack = idcardBack
           that.checkParam.businessLicense = businessLicense
+          // 显示修改对话框
+          that.detailDialogVisible = true
         },
         function(e) {
           // failure
-          console.error(e);
+          console.error(e)
           Message({
             message: '初始化信息异常',
             type: 'error',
             duration: 1000
           })
         }
-      );
-    },
-    detailDialogClose() {
-      this.detailDialogVisible = false;
-    },
+      )
+    }
   }
 }
 </script>

@@ -4,8 +4,10 @@ import java.util.Date;
 
 import com.zty.framework.dto.DataDTO;
 
-public class OrderInfoDO extends DataDTO {
+public class OrderInfoDO  extends DataDTO {
     private Integer id;
+
+    private String thirdOrderNo;
 
     private Integer accountId;
 
@@ -31,12 +33,30 @@ public class OrderInfoDO extends DataDTO {
 
     private Date updateTime;
 
+    private String remarks;
+
+    private String fldS1;
+
+    private Long fldN1;
+
+    private Integer fldN2;
+
+    private Byte fldN3;
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getThirdOrderNo() {
+        return thirdOrderNo;
+    }
+
+    public void setThirdOrderNo(String thirdOrderNo) {
+        this.thirdOrderNo = thirdOrderNo;
     }
 
     public Integer getAccountId() {
@@ -133,5 +153,45 @@ public class OrderInfoDO extends DataDTO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getFldS1() {
+        return fldS1;
+    }
+
+    public void setFldS1(String fldS1) {
+        this.fldS1 = fldS1;
+    }
+
+    public Long getFldN1() {
+        return fldN1;
+    }
+
+    public void setFldN1(Long fldN1) {
+        this.fldN1 = fldN1;
+    }
+
+    public Integer getFldN2() {
+        return fldN2;
+    }
+
+    public void setFldN2(Integer fldN2) {
+        this.fldN2 = fldN2;
+    }
+
+    public Byte getFldN3() {
+        return fldN3;
+    }
+
+    public void setFldN3(Byte fldN3) {
+        this.fldN3 = fldN3;
     }
 }

@@ -1,6 +1,7 @@
 package com.zty.kdd.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -14,6 +15,7 @@ import com.zty.kdd.DO.AccountBalanceDO;
 import com.zty.kdd.DO.OrderInfoDO;
 import com.zty.kdd.DO.example.OrderInfoDOExample;
 import com.zty.kdd.constant.OrderStatus;
+import com.zty.kdd.constant.OrderType;
 import com.zty.kdd.dao.OrderInfoDOMapper;
 import com.zty.kdd.service.BalanceService;
 import com.zty.kdd.service.OrderService;
@@ -42,6 +44,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean chargeWithTransaction(OrderInfoDO orderInfoDO) throws Exception {
+        if (orderInfoDO.getOrderAmount() <= 0) {
+            log.error("参数错误，订单金额必须大于0，{}", orderInfoDO.getActualAmount());
+            return false;
+        }
         if (orderInfoDO.getActualAmount() <= 0) {
             log.error("参数错误，实际金额必须大于0，{}", orderInfoDO.getActualAmount());
             return false;
@@ -74,12 +80,62 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<OrderInfoDO> pageOrderListByPage(OrderInfoDO pageDo) {
         OrderInfoDOExample example = new OrderInfoDOExample();
-        example.createCriteria()
-                .andAccountIdEqualTo(pageDo.getAccountId())
-                .andOrderTypeEqualTo(pageDo.getOrderType())
-                .andOrderMethodEqualTo(pageDo.getOrderMethod())
-                .andStatusEqualTo(pageDo.getStatus());
+        if (pageDo.getAccountId() != null) {
+            // 充值账号
+            example.createCriteria()
+                    .andAccountIdEqualTo(pageDo.getAccountId());
+        }
+        if (pageDo.getOrderType() != null) {
+            // 订单类型
+            example.createCriteria()
+                    .andOrderTypeEqualTo(pageDo.getOrderType());
+        }
+        if (pageDo.getOrderMethod() != null) {
+            // 充值方式
+            example.createCriteria()
+                    .andOrderMethodEqualTo(pageDo.getOrderMethod());
+        }
+        if (pageDo.getStatus() != null) {
+            // 订单状态
+            example.createCriteria()
+                    .andStatusEqualTo(pageDo.getStatus());
+        }
+        example.setOrderByClause("create_time DESC");
         PageHelper.startPage(pageDo.getPage(), pageDo.getRows());
         return (Page<OrderInfoDO>) orderInfoDOMapper.selectByExample(example);
+    }
+
+    /**
+     * 检查并返回已存在的充值订单
+     *
+     * @param orderInfoDO
+     * @return 如果不存在，返回null
+     */
+    @Override
+    public OrderInfoDO checkAndGetCharge(OrderInfoDO orderInfoDO) {
+        OrderInfoDOExample example = new OrderInfoDOExample();
+        example.createCriteria()
+                .andThirdOrderNoEqualTo(orderInfoDO.getThirdOrderNo())
+                .andOrderMethodEqualTo(orderInfoDO.getOrderMethod())
+                .andOrderTypeEqualTo(OrderType.CHARGE);
+        List<OrderInfoDO> result = orderInfoDOMapper.selectByExample(example);
+        return result.size() == 0 ? null : result.get(0);
+    }
+
+    /**
+     * 检查并返回已存在的退款订单
+     *
+     * @param orderInfoDO
+     * @return 如果不存在，返回null
+     */
+    @Override
+    public OrderInfoDO checkAndGetRefund(OrderInfoDO orderInfoDO) {
+        OrderInfoDOExample example = new OrderInfoDOExample();
+        example.createCriteria()
+                .andThirdOrderNoEqualTo(orderInfoDO.getThirdOrderNo())
+                .andOrderMethodEqualTo(orderInfoDO.getOrderMethod())
+                .andOrderTypeEqualTo(OrderType.REFUND);
+        List<OrderInfoDO> result = orderInfoDOMapper.selectByExample(example);
+        return result.size() == 0 ? null : result.get(0);
     }
 }

@@ -8,6 +8,9 @@ spring:
     multipart:
       max-file-size: 300MB
       max-request-size: 320MB
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
 
 mybatis:
   typeAliasesPackage: com.zty.bo.dao

@@ -41,6 +41,10 @@ public class BalanceController {
         } else if (!this.accountService.checkIsAdmin(currentUID, 1)) {
             // 若非管理员，只能查自己的
             queryDo.setAccountId(currentUID);
+        } else {
+            if (queryDo.getAccountId() == null) {
+                return ResultDTO.error(403, "accountId不可为空", queryDo);
+            }
         }
         // 分页查询并返回
         AccountBalanceDO result = this.balanceService.singleQuery(queryDo);

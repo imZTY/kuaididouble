@@ -7,7 +7,8 @@ const state = {
   token: getToken(),
   roleId: null,
   name: null,
-  phone: null
+  phone: null,
+  userId: 0
 }
 
 const mutations = {
@@ -22,6 +23,9 @@ const mutations = {
   },
   SET_PHONE: (state, phone) => {
     state.phone = phone
+  },
+  SET_USERID: (state, userId) => {
+    state.userId = userId
   }
 }
 
@@ -37,6 +41,7 @@ const actions = {
           commit('SET_TOKEN', data.message)
           commit('SET_NAME', data.loginAccountInfo.name)
           commit('SET_PHONE', data.loginAccountInfo.phone)
+          commit('SET_USERID', data.loginAccountInfo.id)
 
           saveUserInfo(data.loginAccountInfo)
           setToken(data.message) // 放到cookie里

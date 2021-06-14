@@ -8,9 +8,9 @@ package com.zty.kdd.constant;
 public class OrderMethod {
 
     /**
-     * 超管人工充值
+     * 支付宝
      */
-    public static final byte ADMIN = 1;
+    public static final byte ALI_PAY = 1;
 
     /**
      * 微信支付
@@ -18,7 +18,19 @@ public class OrderMethod {
     public static final byte WECHAT_PAY = 2;
 
     /**
-     * 支付宝
+     * 银行卡转账
      */
-    public static final byte ALI_PAY = 3;
+    public static final byte BANK_TRANSFER = 3;
+
+    /**
+     * 超管人工充值
+     */
+    public static final byte ADMIN = 4;
+
+    public static boolean contains(byte orderMethod) {
+        return orderMethod == ALI_PAY
+                || orderMethod == WECHAT_PAY
+                || orderMethod == BANK_TRANSFER
+                || orderMethod == ADMIN;
+    }
 }

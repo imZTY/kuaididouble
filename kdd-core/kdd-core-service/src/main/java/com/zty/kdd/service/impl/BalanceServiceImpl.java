@@ -32,6 +32,9 @@ public class BalanceServiceImpl implements BalanceService {
      */
     @Override
     public AccountBalanceDO singleQuery(AccountBalanceDO queryDo) {
+        if (queryDo.getAccountId() == null) {
+            throw new IllegalArgumentException("accountId 不可为空");
+        }
         AccountBalanceDO accountBalanceDO = accountBalanceDOMapper.selectByPrimaryKey(queryDo.getAccountId());
         if (accountBalanceDO == null) {
             // 如果不存在则新增
@@ -39,6 +42,7 @@ public class BalanceServiceImpl implements BalanceService {
             queryDo.setAvailableBalance(INITIAL_BALANCE);
             queryDo.setFrozenBalance(0L);
             accountBalanceDOMapper.insertSelective(queryDo);
+            return queryDo;
         }
         return accountBalanceDO;
     }

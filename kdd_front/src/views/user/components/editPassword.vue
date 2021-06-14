@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="修改密码" :visible.sync="addModalVisible" :before-close="cancel">
+    <el-dialog title="修改密码" :visible.sync="editPwModalVisible" :before-close="cancel">
       <el-form ref="form" :model="form" :rules="rules">
         <el-form-item label="用户名称：" :label-width="formLabelWidth" prop="name">
           <el-input v-model="form.name" autocomplete="off" disabled />
@@ -29,7 +29,7 @@ import { Message } from 'element-ui'
 export default {
   name: 'EditUser',
   props: {
-    addModalVisible: {
+    editPwModalVisible: {
       type: Boolean,
       default: false
     },

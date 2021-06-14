@@ -224,8 +224,10 @@
 
 <script>
 import { getDetail, uploadFile, getSecrect } from "@/api/certificate";
+import { getBalance } from "@/api/balance";
 import { reqEditUser } from "@/api/user";
 import { Message } from 'element-ui'
+import store from '@/store'
 import axios from 'axios'
 axios.defaults.withCredentials = true
 export default {
@@ -278,6 +280,7 @@ export default {
   },
   mounted() {
     this.getMine()
+    this.getMyBalance()
   },
   methods: {
     uploadIdcardFront(file) {
@@ -419,7 +422,7 @@ export default {
     getMine() {
       var that = this;
       getDetail({
-        accountId: 0   //无论传什么，都会强制使用当前登录账号
+        accountId: store.getters.userId   //无论传什么，都会强制使用当前登录账号
       }).then(
         function(res) {
           // success
@@ -471,6 +474,29 @@ export default {
         }
       );
     },
+    getMyBalance() {
+      var that = this;
+      getBalance({
+        accountId: store.getters.userId   //无论传什么，都会强制使用当前登录账号
+      }).then(
+        function(res) {
+          // success
+          console.log('balanceResp ',res.data.data)
+          var balanceResp = res.data.data
+          // 更新条数
+          that.balanceNum = balanceResp.totalBalance
+        },
+        function(e) {
+          // failure
+          console.error(e);
+          Message({
+            message: '初始化信息异常',
+            type: 'error',
+            duration: 1000
+          })
+        }
+      );
+    },
     updateUser() {
       var that = this
       // 清除无法转换的格式
@@ -484,6 +510,7 @@ export default {
             duration: 1000
           })
           that.getMine();
+          that.getMyBalance();
           that.showEditDialogVisible = false;
         },
         function(e) {
@@ -500,18 +527,18 @@ export default {
     // 查看详情
     showMsgDialog() {
       //显示资料详情对话框
-      this.showMsgDialogVisible = true;
+      this.showMsgDialogVisible = true
     },
     showMsgDialogClose() {
-      this.showMsgDialogVisible = false;
+      this.showMsgDialogVisible = false
     },
     // 查看详情
     showEditDialog() {
       //显示资料详情对话框
-      this.showEditDialogVisible = true;
+      this.showEditDialogVisible = true
     },
     showEditDialogClose() {
-      this.showEditDialogVisible = false;
+      this.showEditDialogVisible = false
     },
   }
 }

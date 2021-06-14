@@ -3,6 +3,7 @@
 <mapper namespace="com.zty.kdd.dao.OrderInfoDOMapper" >
   <resultMap id="BaseResultMap" type="com.zty.kdd.DO.OrderInfoDO" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="third_order_no" property="thirdOrderNo" jdbcType="VARCHAR" />
     <result column="account_id" property="accountId" jdbcType="INTEGER" />
     <result column="order_method" property="orderMethod" jdbcType="TINYINT" />
     <result column="order_type" property="orderType" jdbcType="TINYINT" />
@@ -15,6 +16,11 @@
     <result column="create_by" property="createBy" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="fld_s1" property="fldS1" jdbcType="VARCHAR" />
+    <result column="fld_n1" property="fldN1" jdbcType="BIGINT" />
+    <result column="fld_n2" property="fldN2" jdbcType="INTEGER" />
+    <result column="fld_n3" property="fldN3" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -75,8 +81,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, account_id, order_method, order_type, order_amount, discount_type, discount_amount, 
-    actual_amount, status, balance_change, create_by, create_time, update_time
+    id, third_order_no, account_id, order_method, order_type, order_amount, discount_type, 
+    discount_amount, actual_amount, status, balance_change, create_by, create_time, update_time, 
+    remarks, fld_s1, fld_n1, fld_n2, fld_n3
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zty.kdd.DO.example.OrderInfoDOExample" >
     select
@@ -94,7 +101,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from order_info
     where id = #{id,jdbcType=INTEGER}
@@ -110,22 +117,29 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zty.kdd.DO.OrderInfoDO" >
-    insert into order_info (id, account_id, order_method, 
-      order_type, order_amount, discount_type, 
-      discount_amount, actual_amount, status, 
-      balance_change, create_by, create_time, 
-      update_time)
-    values (#{id,jdbcType=INTEGER}, #{accountId,jdbcType=INTEGER}, #{orderMethod,jdbcType=TINYINT}, 
-      #{orderType,jdbcType=TINYINT}, #{orderAmount,jdbcType=BIGINT}, #{discountType,jdbcType=TINYINT}, 
-      #{discountAmount,jdbcType=BIGINT}, #{actualAmount,jdbcType=BIGINT}, #{status,jdbcType=TINYINT}, 
-      #{balanceChange,jdbcType=BIGINT}, #{createBy,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into order_info (id, third_order_no, account_id,
+                            order_method, order_type, order_amount,
+                            discount_type, discount_amount, actual_amount,
+                            status, balance_change, create_by,
+                            create_time, update_time, remarks,
+                            fld_s1, fld_n1, fld_n2,
+                            fld_n3)
+    values (#{id,jdbcType=INTEGER}, #{thirdOrderNo,jdbcType=VARCHAR}, #{accountId,jdbcType=INTEGER},
+            #{orderMethod,jdbcType=TINYINT}, #{orderType,jdbcType=TINYINT}, #{orderAmount,jdbcType=BIGINT},
+            #{discountType,jdbcType=TINYINT}, #{discountAmount,jdbcType=BIGINT}, #{actualAmount,jdbcType=BIGINT},
+            #{status,jdbcType=TINYINT}, #{balanceChange,jdbcType=BIGINT}, #{createBy,jdbcType=INTEGER},
+            #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR},
+            #{fldS1,jdbcType=VARCHAR}, #{fldN1,jdbcType=BIGINT}, #{fldN2,jdbcType=INTEGER},
+            #{fldN3,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.zty.kdd.DO.OrderInfoDO" >
     insert into order_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
+      </if>
+      <if test="thirdOrderNo != null" >
+        third_order_no,
       </if>
       <if test="accountId != null" >
         account_id,
@@ -163,10 +177,28 @@
       <if test="updateTime != null" >
         update_time,
       </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="fldS1 != null" >
+        fld_s1,
+      </if>
+      <if test="fldN1 != null" >
+        fld_n1,
+      </if>
+      <if test="fldN2 != null" >
+        fld_n2,
+      </if>
+      <if test="fldN3 != null" >
+        fld_n3,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
+      </if>
+      <if test="thirdOrderNo != null" >
+        #{thirdOrderNo,jdbcType=VARCHAR},
       </if>
       <if test="accountId != null" >
         #{accountId,jdbcType=INTEGER},
@@ -204,6 +236,21 @@
       <if test="updateTime != null" >
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="fldS1 != null" >
+        #{fldS1,jdbcType=VARCHAR},
+      </if>
+      <if test="fldN1 != null" >
+        #{fldN1,jdbcType=BIGINT},
+      </if>
+      <if test="fldN2 != null" >
+        #{fldN2,jdbcType=INTEGER},
+      </if>
+      <if test="fldN3 != null" >
+        #{fldN3,jdbcType=TINYINT},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.zty.kdd.DO.example.OrderInfoDOExample" resultType="java.lang.Integer" >
@@ -217,6 +264,9 @@
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.thirdOrderNo != null" >
+        third_order_no = #{record.thirdOrderNo,jdbcType=VARCHAR},
       </if>
       <if test="record.accountId != null" >
         account_id = #{record.accountId,jdbcType=INTEGER},
@@ -254,6 +304,21 @@
       <if test="record.updateTime != null" >
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.remarks != null" >
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fldS1 != null" >
+        fld_s1 = #{record.fldS1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fldN1 != null" >
+        fld_n1 = #{record.fldN1,jdbcType=BIGINT},
+      </if>
+      <if test="record.fldN2 != null" >
+        fld_n2 = #{record.fldN2,jdbcType=INTEGER},
+      </if>
+      <if test="record.fldN3 != null" >
+        fld_n3 = #{record.fldN3,jdbcType=TINYINT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -262,18 +327,24 @@
   <update id="updateByExample" parameterType="map" >
     update order_info
     set id = #{record.id,jdbcType=INTEGER},
-      account_id = #{record.accountId,jdbcType=INTEGER},
-      order_method = #{record.orderMethod,jdbcType=TINYINT},
-      order_type = #{record.orderType,jdbcType=TINYINT},
-      order_amount = #{record.orderAmount,jdbcType=BIGINT},
-      discount_type = #{record.discountType,jdbcType=TINYINT},
-      discount_amount = #{record.discountAmount,jdbcType=BIGINT},
-      actual_amount = #{record.actualAmount,jdbcType=BIGINT},
-      status = #{record.status,jdbcType=TINYINT},
-      balance_change = #{record.balanceChange,jdbcType=BIGINT},
-      create_by = #{record.createBy,jdbcType=INTEGER},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    third_order_no = #{record.thirdOrderNo,jdbcType=VARCHAR},
+    account_id = #{record.accountId,jdbcType=INTEGER},
+    order_method = #{record.orderMethod,jdbcType=TINYINT},
+    order_type = #{record.orderType,jdbcType=TINYINT},
+    order_amount = #{record.orderAmount,jdbcType=BIGINT},
+    discount_type = #{record.discountType,jdbcType=TINYINT},
+    discount_amount = #{record.discountAmount,jdbcType=BIGINT},
+    actual_amount = #{record.actualAmount,jdbcType=BIGINT},
+    status = #{record.status,jdbcType=TINYINT},
+    balance_change = #{record.balanceChange,jdbcType=BIGINT},
+    create_by = #{record.createBy,jdbcType=INTEGER},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+    remarks = #{record.remarks,jdbcType=VARCHAR},
+    fld_s1 = #{record.fldS1,jdbcType=VARCHAR},
+    fld_n1 = #{record.fldN1,jdbcType=BIGINT},
+    fld_n2 = #{record.fldN2,jdbcType=INTEGER},
+    fld_n3 = #{record.fldN3,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -281,6 +352,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.zty.kdd.DO.OrderInfoDO" >
     update order_info
     <set >
+      <if test="thirdOrderNo != null" >
+        third_order_no = #{thirdOrderNo,jdbcType=VARCHAR},
+      </if>
       <if test="accountId != null" >
         account_id = #{accountId,jdbcType=INTEGER},
       </if>
@@ -317,23 +391,44 @@
       <if test="updateTime != null" >
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="fldS1 != null" >
+        fld_s1 = #{fldS1,jdbcType=VARCHAR},
+      </if>
+      <if test="fldN1 != null" >
+        fld_n1 = #{fldN1,jdbcType=BIGINT},
+      </if>
+      <if test="fldN2 != null" >
+        fld_n2 = #{fldN2,jdbcType=INTEGER},
+      </if>
+      <if test="fldN3 != null" >
+        fld_n3 = #{fldN3,jdbcType=TINYINT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zty.kdd.DO.OrderInfoDO" >
     update order_info
-    set account_id = #{accountId,jdbcType=INTEGER},
-      order_method = #{orderMethod,jdbcType=TINYINT},
-      order_type = #{orderType,jdbcType=TINYINT},
-      order_amount = #{orderAmount,jdbcType=BIGINT},
-      discount_type = #{discountType,jdbcType=TINYINT},
-      discount_amount = #{discountAmount,jdbcType=BIGINT},
-      actual_amount = #{actualAmount,jdbcType=BIGINT},
-      status = #{status,jdbcType=TINYINT},
-      balance_change = #{balanceChange,jdbcType=BIGINT},
-      create_by = #{createBy,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    set third_order_no = #{thirdOrderNo,jdbcType=VARCHAR},
+        account_id = #{accountId,jdbcType=INTEGER},
+        order_method = #{orderMethod,jdbcType=TINYINT},
+        order_type = #{orderType,jdbcType=TINYINT},
+        order_amount = #{orderAmount,jdbcType=BIGINT},
+        discount_type = #{discountType,jdbcType=TINYINT},
+        discount_amount = #{discountAmount,jdbcType=BIGINT},
+        actual_amount = #{actualAmount,jdbcType=BIGINT},
+        status = #{status,jdbcType=TINYINT},
+        balance_change = #{balanceChange,jdbcType=BIGINT},
+        create_by = #{createBy,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        remarks = #{remarks,jdbcType=VARCHAR},
+        fld_s1 = #{fldS1,jdbcType=VARCHAR},
+        fld_n1 = #{fldN1,jdbcType=BIGINT},
+        fld_n2 = #{fldN2,jdbcType=INTEGER},
+        fld_n3 = #{fldN3,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

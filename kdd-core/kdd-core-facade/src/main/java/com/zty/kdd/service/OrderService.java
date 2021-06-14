@@ -23,4 +23,18 @@ public interface OrderService {
      * @return
      */
     public Page<OrderInfoDO> pageOrderListByPage(OrderInfoDO pageDo);
+
+    /**
+     * 检查并返回已存在的充值订单
+     * @param orderInfoDO
+     * @return 如果不存在，返回null
+     */
+    public OrderInfoDO checkAndGetCharge(OrderInfoDO orderInfoDO);
+
+    /**
+     * 检查并返回已存在的退款订单
+     * @param orderInfoDO
+     * @return 如果不存在，返回null
+     */
+    public OrderInfoDO checkAndGetRefund(OrderInfoDO orderInfoDO);
 }

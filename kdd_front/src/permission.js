@@ -25,20 +25,21 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       if (!store.getters.roleId) {
-        const userList = getUserInfo()
+        const userInfo = getUserInfo()
         console.log('无roleId')
-        if (!userList) {
+        if (!userInfo) {
           // 务必将cookies清除 否则死循环
           console.log('死循环')
           Cookies.remove('token')
           next(`/login`)
           NProgress.done()
         } else {
-          store.commit('user/SET_ROLEID', userList.roleId)
-          store.commit('user/SET_NAME', userList.name)
-          store.commit('user/SET_PHONE', userList.phone)
+          store.commit('user/SET_ROLEID', userInfo.roleId)
+          store.commit('user/SET_NAME', userInfo.name)
+          store.commit('user/SET_PHONE', userInfo.phone)
+          store.commit('user/SET_USERID', userInfo.id)
           store
-            .dispatch('permission/GenerateRoutes', { roleId: userList.roleId })
+            .dispatch('permission/GenerateRoutes', { roleId: userInfo.roleId })
             .then(() => {
               // 根据roles权限生成可访问的路由表
               router.addRoutes(store.getters.addRouters) // 动态添加可访问权限路由表

@@ -1,15 +1,12 @@
 package com.zty.kdd.dao;
 
-import com.zty.kdd.DO.OrderInfoDO;
-import com.zty.kdd.DO.example.OrderInfoDOExample;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
-@Mapper
-@Component
+import com.zty.kdd.DO.OrderInfoDO;
+import com.zty.kdd.DO.example.OrderInfoDOExample;
+
 public interface OrderInfoDOMapper {
     int countByExample(OrderInfoDOExample example);
 
