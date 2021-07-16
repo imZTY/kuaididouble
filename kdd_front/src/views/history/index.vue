@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:16px">
+  <div style="padding: 16px">
     <el-card style="margin-bottom: 16px">
       <div slot="header">
         <span>接口请求历史</span>
@@ -7,139 +7,128 @@
           type="info"
           size="small"
           @click="openTips"
-          style="display: inline-block;margin:-6px 20px;float:right"
-        >使用说明</el-button>
+          style="display: inline-block; margin: -6px 20px; float: right"
+          >使用说明</el-button
+        >
       </div>
-      <div style="position: relative;margin-bottom: 12px">
+      <div style="position: relative; margin-bottom: 12px">
         <el-pagination
           @size-change="historySizeChange"
           @current-change="historyCurrentChange"
           :page-size="15"
           layout="total, prev, pager, next"
           :total="historyTotal"
-          style="display: inline-block;position: relative;right: 0;"
+          style="display: inline-block; position: relative; right: 0"
           :current-page.sync="currentHistoryPage"
         ></el-pagination>
       </div>
-      <el-table :data="historyData" border style="text-align: center;">
-        <el-table-column prop="thirdhistoryNo" label="第三方单号" align="center" />
-        <el-table-column prop="accountId" label="充值账号" align="center" />
-        <el-table-column prop="historyAmount" label="订单金额" align="center" />
-        <el-table-column prop="actualAmount" label="实付金额" align="center" />
-        <el-table-column prop="createTime" label="创建时间" align="center" />
-        <el-table-column prop="balanceChange" label="条数变化" align="center" />
-        <el-table-column prop="createBy" label="操作人" align="center" />
-        <!-- <el-table-column label="操作" style="text-align: center;" align="center">
+      <el-table :data="historyData" border style="text-align: center">
+        <el-table-column prop="messageId" label="消息号" align="center" />
+        <el-table-column prop="accountId" label="请求账号" align="center" />
+        <el-table-column
+          prop="thirdApiCompany"
+          label="快递公司"
+          :formatter="parseThirdApiCompany"
+          align="center"
+        />
+        <el-table-column prop="isError" :formatter="parseIsError" label="是否异常" align="center" />
+        <el-table-column prop="costTime" :formatter="addMsUnit" label="接口耗时" align="center" />
+        <el-table-column prop="createTime" :formatter="timestampToDateStr" label="创建时间" align="center" />
+        <el-table-column label="操作" style="text-align: center" align="center">
           <template slot-scope="scope">
             <el-button
               type="primary"
               size="mini"
               @click="showCheckDialog(scope.$index, scope.row)"
-            >退款</el-button>
+              >查看报文</el-button
+            >
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
     </el-card>
+    <detail-dialog
+      :detail-dialog-visible='detailDialogVisible'
+      :form='form'
+      @cancel='cancel'
+      @refresh='init(1)'
+    />
   </div>
 </template>
 <script>
-import { pageList } from "@/api/order"
+import { pageList } from "@/api/queryLog"
+import DetailDialog from './components/detailDialog'
+import moment from "moment"
 
 export default {
-  components: {
-  },
+  components: { DetailDialog },
   data() {
     return {
-      checkDialogVisible: false, //进件审核对话框
-      historyTotal: 0, //需认证的总数
+      detailDialogVisible: false,
+      historyTotal: 0,
       currentHistoryPage: 1,
-      checkParma: {  //详情弹窗的数据
-        roleId: 2,
-        name: "",
-        cardType: 1,
-        cardNo: "",
-        job: "",
-        phone: "",
-        organization: "",
-        city: "",
-        email: "",
-        accountId: "",
-        address: "",
-        isPass: 1,
-        description: "",
-        updateTime: "",
-        idcardFront: "",
-        idcardBack: "",
-        businessLicense: ""
+      form: {
+        messageId: '',
+        requestMsg: '',
+        responseMsg: ''
       },
       historyData: [
         //模拟接口数据
-      ]
+      ],
     };
   },
   mounted() {
     this.getUnfinishPage(1)
   },
   methods: {
+    parseThirdApiCompany(rowdata) {
+      if (rowdata.thirdApiCompany == 1) {
+        return '顺丰速运'
+      }
+      return '未知('+rowdata.thirdApiCompany+')'
+    },
+    parseIsError(rowdata) {
+      if (rowdata.isError === 0) {
+        return '正常'
+      } else {
+        return '异常'
+      }
+    },
+    addMsUnit(rowdata) {
+      return rowdata.costTime + 'ms'
+    },
+    timestampToDateStr(rowdata) {
+      if (rowdata === undefined || rowdata.createTime === undefined || rowdata.createTime === null) {
+        return "";
+      }
+      return moment(rowdata.createTime).format("yyyy/MM/DD hh:mm:ss")
+    },
     getUnfinishPage(p) {
-      var that = this
+      var that = this;
       pageList({
         page: p,
-        rows: 15
+        rows: 15,
       }).then(
-        function(res) {
+        function (res) {
           // success
           // console.log('pageList',res.data.data)
           that.historyTotal = res.data.count
           that.historyData = res.data.data
         },
-        function(e) {
+        function (e) {
           // failure
           console.error(e)
         }
       );
     },
     // 查看详情
-    // showCheckDialog(index, row) {
-    //   //显示修改对话框
-    //   // console.log(index,row)
-    //   // 按文件类型获取图片url
-    //   var idcardFront = ''
-    //   var idcardBack = ''
-    //   var businessLicense = ''
-    //   for (let i = 0; i < row.certificateFiles.length; i++) {
-    //     const certificateFile = row.certificateFiles[i];
-    //     if (certificateFile.fileKind == 1) {
-    //       // 身份证正面
-    //       idcardFront = certificateFile.path
-    //     } else if (certificateFile.fileKind == 2) {
-    //       // 身份证反面
-    //       idcardBack = certificateFile.path
-    //     } else {
-    //       // 营业执照
-    //       businessLicense = certificateFile.path
-    //     }
-    //   }
-    //   this.checkParma.roleId = row.accountInfo.roleId
-    //   this.checkParma.name = row.accountInfo.name
-    //   this.checkParma.cardNo = row.userInfo.cardNo
-    //   this.checkParma.job = row.userInfo.job
-    //   this.checkParma.phone = row.accountInfo.phone
-    //   this.checkParma.organization = row.userInfo.organization
-    //   this.checkParma.city = row.userInfo.city
-    //   this.checkParma.email = row.userInfo.email
-    //   this.checkParma.accountId = row.userInfo.accountId
-    //   this.checkParma.address = row.userInfo.address
-    //   this.checkParma.isPass = 0
-    //   this.checkParma.description = row.userInfo.description
-    //   this.checkParma.updateTime = row.userInfo.updateTime
-    //   this.checkParma.idcardFront = idcardFront
-    //   this.checkParma.idcardBack = idcardBack
-    //   this.checkParma.businessLicense = businessLicense
-    //   this.checkDialogVisible = true
-    // },
+    showCheckDialog(index, row) {
+      this.form.messageId = row.messageId
+      this.form.requestMsg = row.requestMsg
+      this.form.responseMsg = row.responseMsg
+      this.detailDialogVisible = true
+    },
     cancel() {
-      this.checkDialogVisible = false
+      this.detailDialogVisible = false
       this.historyCurrentChange()
     },
     historySizeChange() {
@@ -159,12 +148,12 @@ export default {
         confirmButtonText: "确定",
         type: "info",
         center: true,
-        dangerouslyUseHTMLString: true
+        dangerouslyUseHTMLString: true,
       })
         .then(() => {})
         .catch(() => {})
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

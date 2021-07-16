@@ -93,7 +93,7 @@ public class MaptrackApiImpl implements MaptrackApi {
             return maptrackQueryRespAO;
         } finally {
             queryLogDO.setCostTime(timer.getLastTaskTimeMillis());
-            queryLogDO.setResponseMsg(result.length() > 512 ? result.substring(0, 512) : result);
+            queryLogDO.setResponseMsg(result);
             // 异步记录请求
             httpRateLimitPool.dealSupplier(() -> {
                 return transQueryLogService.logQuery(Collections.singletonList(queryLogDO));

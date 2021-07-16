@@ -26,7 +26,7 @@
         <el-table-column prop="accountInfo.name" label="用户名称" align="center" />
         <el-table-column prop="userInfo.organization" label="公司组织" align="center" />
         <el-table-column prop="userInfo.email" label="邮箱地址" align="center" />
-        <el-table-column prop="userInfo.updateTime" label="修改时间" align="center" />
+        <el-table-column prop="userInfo.updateTime" :formatter="timestampToDateStr" label="修改时间" align="center" />
         <el-table-column prop="userInfo.description" label="备注" align="center" />
         <el-table-column label="操作" style="text-align: center;" align="center">
           <template slot-scope="scope">
@@ -52,6 +52,7 @@
 <script>
 import { pageListUnfinish } from "@/api/certificate"
 import CheckDialog from './components/checkDialog'
+import moment from "moment"
 
 export default {
   components: {
@@ -90,6 +91,12 @@ export default {
     this.getUnfinishPage(1)
   },
   methods: {
+    timestampToDateStr(rowdata) {
+      if (rowdata === undefined || rowdata.userInfo.updateTime === undefined || rowdata.userInfo.updateTime === null) {
+        return "";
+      }
+      return moment(rowdata.userInfo.updateTime).format("yyyy/MM/DD hh:mm:ss");
+    },
     getUnfinishPage(p) {
       var that = this
       pageListUnfinish({

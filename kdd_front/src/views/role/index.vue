@@ -16,7 +16,7 @@
             <tooltip :rights="scope.row.rights" />
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间" />
+        <el-table-column prop="createTime" :formatter="timestampToDateStr" label="创建时间" />
         <el-table-column prop="message" label="角色信息" />
 
         <el-table-column fixed="right" label="操作">
@@ -53,6 +53,8 @@ import { RIGHTS } from '@/utils/role'
 import Tooltip from './components/tooltip'
 import AddUser from './components/addUser'
 import EditUser from './components/editUser'
+import moment from "moment"
+
 export default {
   name: '',
   components: {
@@ -73,6 +75,12 @@ export default {
     this.init(1)
   },
   methods: {
+    timestampToDateStr(rowdata) {
+      if (rowdata === undefined || rowdata.createTime === undefined || rowdata.createTime === null) {
+        return "";
+      }
+      return moment(rowdata.createTime).format("yyyy/MM/DD hh:mm:ss");
+    },
     init(page) {
       getRoleList({ page, rows: 1000 }).then(res => {
         const data = res.data.data

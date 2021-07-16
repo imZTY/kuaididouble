@@ -82,7 +82,7 @@ public class TransQueryLogDO extends DataDTO {
     }
 
     public void setResponseMsg(String responseMsg) {
-        this.responseMsg = responseMsg;
+        this.responseMsg = responseMsg.length() > 512 ? responseMsg.substring(0, 512) : responseMsg;
     }
 
     public Long getCostTime() {

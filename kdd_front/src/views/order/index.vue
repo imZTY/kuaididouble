@@ -26,7 +26,7 @@
         <el-table-column prop="accountId" label="充值账号" align="center" />
         <el-table-column prop="orderAmount" label="订单金额" align="center" />
         <el-table-column prop="actualAmount" label="实付金额" align="center" />
-        <el-table-column prop="createTime" label="创建时间" align="center" />
+        <el-table-column prop="createTime" :formatter="timestampToDateStr" label="创建时间" align="center" />
         <el-table-column prop="balanceChange" label="条数变化" align="center" />
         <el-table-column prop="createBy" label="操作人" align="center" />
         <!-- <el-table-column label="操作" style="text-align: center;" align="center">
@@ -44,6 +44,7 @@
 </template>
 <script>
 import { pageList } from "@/api/order"
+import moment from "moment"
 
 export default {
   components: {
@@ -81,6 +82,12 @@ export default {
     this.getUnfinishPage(1)
   },
   methods: {
+    timestampToDateStr(rowdata) {
+      if (rowdata === undefined || rowdata.createTime === undefined || rowdata.createTime === null) {
+        return "";
+      }
+      return moment(rowdata.createTime).format("yyyy/MM/DD hh:mm:ss");
+    },
     getUnfinishPage(p) {
       var that = this
       pageList({

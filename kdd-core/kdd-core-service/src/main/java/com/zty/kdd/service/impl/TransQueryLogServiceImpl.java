@@ -2,12 +2,15 @@ package com.zty.kdd.service.impl;
 
 import java.util.List;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zty.kdd.DO.TransQueryLogDO;
+import com.zty.kdd.DO.example.TransQueryLogDOExample;
 import com.zty.kdd.dao.TransQueryLogDOMapper;
 import com.zty.kdd.service.TransQueryLogService;
 
@@ -39,5 +42,22 @@ public class TransQueryLogServiceImpl implements TransQueryLogService {
         }
         log.info("实际插入查询记录, {}条", count);
         return count;
+    }
+
+    /**
+     * 分页查询充值订单
+     *
+     * @param pageDo
+     * @return
+     */
+    @Override
+    public Page<TransQueryLogDO> pageListByPage(TransQueryLogDO pageDo) {
+        TransQueryLogDOExample example = new TransQueryLogDOExample();
+        if (pageDo.getAccountId() != null) {
+            example.createCriteria().andAccountIdEqualTo(pageDo.getAccountId());
+        }
+        example.setOrderByClause("create_time DESC");
+        PageHelper.startPage(pageDo.getPage(), pageDo.getRows());
+        return (Page<TransQueryLogDO>) transQueryLogDOMapper.selectByExample(example);
     }
 }

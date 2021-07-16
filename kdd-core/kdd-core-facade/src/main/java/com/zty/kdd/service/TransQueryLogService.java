@@ -2,6 +2,8 @@ package com.zty.kdd.service;
 
 import java.util.List;
 
+import com.github.pagehelper.Page;
+
 import com.zty.kdd.DO.TransQueryLogDO;
 
 /**
@@ -16,4 +18,12 @@ public interface TransQueryLogService {
      * @return
      */
     public int logQuery(List<TransQueryLogDO> dataList);
+
+    /**
+     * 分页查询充值订单
+     * @param pageDo
+     * @return
+     */
+    public Page<TransQueryLogDO> pageListByPage(TransQueryLogDO pageDo);
+
 }
