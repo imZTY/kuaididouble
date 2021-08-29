@@ -11,24 +11,26 @@
 
     <artifactId>kdd-third-sf</artifactId>
 
+    <properties>
+        <SF-CSIM-EXPRESS-SDK.version>2.1.1</SF-CSIM-EXPRESS-SDK.version>
+    </properties>
+
     <dependencies>
         <!-- 内部依赖 -->
         <dependency>
             <groupId>com.zty</groupId>
             <artifactId>framework-common</artifactId>
-            <version>${zty-wheels.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.zty.kuaididouble</groupId>
             <artifactId>kdd-third-facade</artifactId>
-            <version>${kuaididouble.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.sf.csim</groupId>
             <artifactId>SF-CSIM-EXPRESS-SDK</artifactId>
-            <version>2.1.1</version>
+            <version>${SF-CSIM-EXPRESS-SDK.version}</version>
         </dependency>
     </dependencies>
 

@@ -1,36 +1,37 @@
 package com.zty.kdd.api.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import com.zty.framework.exception.ParamCheckException;
+import com.zty.kdd.third.request.ThirdMaptrackQueryRequest;
+import com.zty.kdd.third.response.ThirdMaptrackQueryResponse;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
-import com.zty.kdd.DO.AccountBalanceDO;
 import com.zty.kdd.DO.TransQueryLogDO;
-import com.zty.kdd.ao.MaptrackQueryReqAO;
-import com.zty.kdd.ao.MaptrackQueryRespAO;
+import com.zty.kdd.request.MaptrackQueryRequest;
+import com.zty.kdd.response.MaptrackQueryResponse;
 import com.zty.kdd.api.MaptrackApi;
 import com.zty.kdd.enums.CompanyEnum;
 import com.zty.kdd.enums.StatusCodeEnum;
 import com.zty.kdd.enums.TransStatusEnum;
-import com.zty.kdd.limiter.HttpRateLimitPool;
-import com.zty.kdd.service.BalanceService;
+import com.zty.kdd.limiter.AsyncLogRateLimitPool;
 import com.zty.kdd.service.TransQueryLogService;
-import com.zty.kdd.third.dto.SFThirdQueryDTO;
 import com.zty.kdd.third.enums.ThirdTransStatusEnum;
-import com.zty.kdd.third.resp.MsgDataDTO;
-import com.zty.kdd.third.resp.ShunFengResp;
-import com.zty.kdd.third.service.AbstractSDKService;
+import com.zty.kdd.third.service.AbstractMaptrackQuerySDKService;
 
 /**
  * @author tianyi
@@ -42,148 +43,199 @@ public class MaptrackApiImpl implements MaptrackApi {
     private static final Logger log = LoggerFactory.getLogger(MaptrackApiImpl.class);
 
     @Resource(name = "Shunfeng_SDK")
-    private AbstractSDKService shunfengSDKService;
+    private AbstractMaptrackQuerySDKService shunfengSDKService;
 
-    @Autowired
-    private BalanceService balanceService;
+    @Resource(name = "ZTO_SDK")
+    private AbstractMaptrackQuerySDKService ztoSDKService;
+
+    /**
+     * KEY: 在线文档定义的内部码值
+     * VALUE: 具体物流服务BEAN
+     */
+    private static final Map<String, AbstractMaptrackQuerySDKService> THIRD_SERVICE_MAP = new HashMap<>();
+
+    @PostConstruct
+    private void init() {
+        // 顺丰SDK服务
+        THIRD_SERVICE_MAP.put("SF", shunfengSDKService);
+        // 中通SDK服务 TODO 审核未通过 测试数据不全 未验证
+        THIRD_SERVICE_MAP.put("ZTO", ztoSDKService);
+    }
 
     @Autowired
     private TransQueryLogService transQueryLogService;
 
+    /**
+     * 异步日志记录限频线程池
+     */
     @Autowired
-    private HttpRateLimitPool httpRateLimitPool;
+    private AsyncLogRateLimitPool asyncLogRateLimitPool;
 
     @Override
-    public MaptrackQueryRespAO singleQuery(MaptrackQueryReqAO reqAO) throws Exception {
-        MaptrackQueryRespAO maptrackQueryRespAO = new MaptrackQueryRespAO();
-        AccountBalanceDO accountBalanceDO = new AccountBalanceDO().accountId(reqAO.getCurrentUID());
-        // 检查并预扣余额
-        balanceService.checkAndFrozen(accountBalanceDO);
-        String result = null;
-        // 拼装请求记录参数
-        Map<String, Object> reqParam = shunfengSDKService.getReqBody(new SFThirdQueryDTO(reqAO.getParamObj()));
-        TransQueryLogDO queryLogDO = parseQueryLogDO(reqParam, reqAO);
+    public MaptrackQueryResponse singleQuery(MaptrackQueryRequest reqAO) throws Exception {
+        if (StringUtils.isBlank(reqAO.getKddCompanyCode())) {
+            log.warn("快递公司编号不可为空");
+            throw new ParamCheckException("快递公司编号不可为空", "kddCompanyCode", reqAO.getKddCompanyCode());
+        }
+        // 根据入参key选择对应的实现通道
+        AbstractMaptrackQuerySDKService thirdService = THIRD_SERVICE_MAP.get(reqAO.getKddCompanyCode());
+        if (thirdService == null) {
+            log.warn("找不到{}对应的实现", reqAO.getKddCompanyCode());
+            throw new ParamCheckException("暂不支持该快递公司:" + reqAO.getKddCompanyCode());
+        }
+        // 拼装请求参数(含参数校验)
+        ThirdMaptrackQueryRequest thirdRequest = thirdService.getThirdQueryRequest(reqAO.getParamObj());
+        // 日志记录构建器
+        TransQueryLogDO.Builder logBuilder = parseQueryLogDOBuilder(thirdRequest, reqAO);
+        // 请求计时器，计算耗时
         StopWatch timer = new StopWatch();
-        ShunFengResp respObj = null;
+        // 第三方响应对象
+        ThirdMaptrackQueryResponse thirdRespObj = null;
         try {
             timer.start();
-            result = shunfengSDKService.query(
-                    null,
-                    reqParam);
+            thirdRespObj = thirdService.query(
+                    thirdService.getHeaders(reqAO.getParamObj()),
+                    thirdRequest);
             timer.stop();
-            // 实扣余额
-            balanceService.checkAndCut(accountBalanceDO);
-            respObj = JSON.parseObject(result, ShunFengResp.class);
-            queryLogDO.setIsError((byte) 0);
-            queryLogDO.setMessageId(respObj.getApiResponseID());
+            // 记录通信结果(是否失败、第三方消息号)
+            logBuilder.communicationResult(thirdRespObj.getCommunicationResult());
         } catch (Exception e) {
             if (timer.isRunning()) {
                 timer.stop();
             }
-            log.error("物流轨迹查询异常, 入参={}, ", reqAO, e);
-            queryLogDO.setIsError((byte) 1);
-            result = e.getMessage() == null ? "null" : e.getMessage();
-            // 解冻余额
-            balanceService.checkAndUnfrozen(accountBalanceDO);
-            // 返回通信异常
-            maptrackQueryRespAO.setState(TransStatusEnum.UNKNOW.getStringValue());
-            maptrackQueryRespAO.setCondition("通信异常");
-            maptrackQueryRespAO.setStatus(StatusCodeEnum.SERVER_ERROR.getStringCode());
-            maptrackQueryRespAO.setMessage(e.getMessage());
-            return maptrackQueryRespAO;
+            log.warn("物流轨迹查询异常, 入参={}, ", reqAO, e);
+            logBuilder.communicationResult(ThirdMaptrackQueryResponse.CommunicateResult.error(
+                    e.getMessage() == null ? "null" : e.getMessage()
+            ));
+            // 继续抛出异常，在controller层统一处理
+            throw e;
         } finally {
-            queryLogDO.setCostTime(timer.getLastTaskTimeMillis());
-            queryLogDO.setResponseMsg(result);
+            logBuilder.costTime(timer.getLastTaskTimeMillis());
             // 异步记录请求
-            httpRateLimitPool.dealSupplier(() -> {
-                return transQueryLogService.logQuery(Collections.singletonList(queryLogDO));
+            asyncLogRateLimitPool.dealSupplier(() -> {
+                return transQueryLogService.logQuery(Collections.singletonList(logBuilder.build()));
             });
         }
-        if (respObj != null && "A1000".equals(respObj.getApiResultCode())) {
-            // 通信成功，再检查一下业务是否成功
-            ShunFengResp.ResultData apiResultData = respObj.getApiResultData();
-            if (BooleanUtils.isNotTrue(apiResultData.getSuccess())) {
-                maptrackQueryRespAO.setState(apiResultData.getErrorCode());
-                maptrackQueryRespAO.setCondition("第三方业务响应失败");
-                maptrackQueryRespAO.setStatus(StatusCodeEnum.QUERY_FAIL.getStringCode());
-                maptrackQueryRespAO.setMessage(JSON.toJSONString(apiResultData));
+        // 组装响应出参
+        MaptrackQueryResponse maptrackQueryResponse = new MaptrackQueryResponse();
+        maptrackQueryResponse.setCom(reqAO.getParamObj().getCom());
+        maptrackQueryResponse.setNu(reqAO.getParamObj().getNum());
+        // 通信没报错，继续解析第三方报文里的信息
+        ThirdMaptrackQueryResponse.CommunicateResult communicateResult = thirdRespObj.getCommunicationResult();
+        if (thirdRespObj != null && thirdRespObj.isCommunicateSuccess()) {
+            ThirdMaptrackQueryResponse.BusinessResult businessResult = thirdRespObj.getBusinessResult();
+            // 第三方通信成功，再检查一下业务是否成功
+            if (thirdRespObj.isBusinessSuccess()) {
+                // 业务成功
+                maptrackQueryResponse.setMessage("ok");
+                maptrackQueryResponse.setStatus(StatusCodeEnum.OK.getStringCode());
+                // 第三方状态转换
+                maptrackQueryResponse.setState(parseThirdStateCode(businessResult.getThirdStateCode(), thirdService).getStringValue());
+                // 物流链路数据拼装
+                maptrackQueryResponse.setData(parseThirdTrackData(businessResult.getThirdTrackDataList()));
+            } else {
+                // 业务失败
+                maptrackQueryResponse.setState(TransStatusEnum.UNKNOW.getStringValue());
+                maptrackQueryResponse.setMessage("第三方业务响应失败");
+                maptrackQueryResponse.setStatus(StatusCodeEnum.QUERY_FAIL.getStringCode());
             }
-            // 解析响应报文，拼装出参
-            MsgDataDTO respData = apiResultData.getMsgData();
-            // 单个查询，只取第一条内容
-            MsgDataDTO.RouteRespsDTO transRouteMsg = respData.getRouteResps().get(0);
-            // 拼装出参
-            maptrackQueryRespAO.setCom(reqAO.getParamObj().getCom());
-            maptrackQueryRespAO.setNu(reqAO.getParamObj().getNum());
-            // 将顺丰的最新操作码，映射成快递100标准的状态码
-            TransStatusEnum transStatusEnum = parseShunFengOpCode(transRouteMsg.getNewestOpCode());
-            maptrackQueryRespAO.setState(transStatusEnum.getStringValue());
-            maptrackQueryRespAO.setCondition(transStatusEnum.getName());
-            maptrackQueryRespAO.setStatus(StatusCodeEnum.OK.getStringCode());
-            maptrackQueryRespAO.setMessage("ok");
-            maptrackQueryRespAO.setIscheck("0");
-            maptrackQueryRespAO.setData(transRouteMsg.getRoutes()
-                    .stream()
-                    .map(this::parseRespRouteFromShunFeng)
-                    .collect(Collectors.toList()));
         } else {
-            // 失败响应
-            maptrackQueryRespAO.setState(TransStatusEnum.UNKNOW.getStringValue());
-            maptrackQueryRespAO.setCondition(respObj != null ? respObj.getApiResultCode() : null);
-            maptrackQueryRespAO.setStatus(StatusCodeEnum.SERVER_ERROR.getStringCode());
-            maptrackQueryRespAO.setMessage(respObj != null ? respObj.getApiErrorMsg() : "respObj=null");
-//            maptrackQueryRespAO.setIscheck("0");
+            // 通信失败响应
+            maptrackQueryResponse.setState(TransStatusEnum.UNKNOW.getStringValue());
+            maptrackQueryResponse.setStatus(StatusCodeEnum.SERVER_BUSY.getStringCode());
+            maptrackQueryResponse.setMessage(communicateResult.getResponseStr());
         }
-        return maptrackQueryRespAO;
+        return maptrackQueryResponse;
+    }
+
+    /**
+     * 需保持顺序一致
+     * @param thirdTrackDataList 第三方标准出参，倒序排列
+     * @return 标准出参
+     */
+    private List<MaptrackQueryResponse.TrackDataDTO> parseThirdTrackData(List<ThirdMaptrackQueryResponse.ThirdTrackDataDTO> thirdTrackDataList) {
+        List<MaptrackQueryResponse.TrackDataDTO> trackDataList = new ArrayList<>();
+        for (int i = 0; i < thirdTrackDataList.size(); i++) {
+            ThirdMaptrackQueryResponse.ThirdTrackDataDTO thirdTrackData = thirdTrackDataList.get(i);
+            MaptrackQueryResponse.TrackDataDTO trackDataDTO = new MaptrackQueryResponse.TrackDataDTO();
+            trackDataDTO.setContext(thirdTrackData.getContext());
+            trackDataDTO.setTime(thirdTrackData.getTime());
+            trackDataDTO.setFtime(thirdTrackData.getFtime());
+            trackDataList.add(trackDataDTO);
+        }
+        return trackDataList;
     }
 
     /**
      * 初始化日志对象
-     * @param reqParam 调用第三方的转换后的参数
-     * @param reqAO 请求参数
+     * @param thirdRequest 调用第三方的转换后的参数
+     * @param reqAO    请求参数
+     * @return
      */
-    private TransQueryLogDO parseQueryLogDO(Map<String, Object> reqParam, MaptrackQueryReqAO reqAO) {
-        String requestMsg = JSON.toJSONString(reqParam);
-        return new TransQueryLogDO()
+    private TransQueryLogDO.Builder parseQueryLogDOBuilder(ThirdMaptrackQueryRequest thirdRequest, MaptrackQueryRequest reqAO) {
+        String requestMsg = JSON.toJSONString(thirdRequest);
+        CompanyEnum companyEnum = CompanyEnum.getByApikey(reqAO.getKddCompanyCode(), true);
+        return new TransQueryLogDO.Builder()
                 .accountId(reqAO.getCurrentUID())
-                .thirdApiCompany(CompanyEnum.SHUNFENG.getCode())
+                .thirdApiCompany(companyEnum.getCode()) //传了true，companyEnum不会为null
                 .requestMsg(requestMsg.length() > 512 ? requestMsg.substring(0, 512) : requestMsg)
                 .createTime(new Date());
     }
 
-    private MaptrackQueryRespAO.DataDTO parseRespRouteFromShunFeng(MsgDataDTO.RouteRespsDTO.RoutesDTO routesDTO) {
-        MaptrackQueryRespAO.DataDTO dataDTO = new MaptrackQueryRespAO.DataDTO();
-        dataDTO.setContext(routesDTO.getAcceptAddress() + "/" + parseShunFengOpCode(routesDTO.getOpCode()).getName());
-        dataDTO.setTime(routesDTO.getAcceptTime());
-        dataDTO.setFtime(routesDTO.getAcceptTime());
-        return dataDTO;
-    }
-
-
     /**
-     * 将第三方(顺丰)的 code 转换为内部的code
-     * @param opCode
+     * 将第三方的 code 转换为内部的code
+     * @param thirdStateCode
      * @return
      */
-    private TransStatusEnum parseShunFengOpCode(String opCode) {
-        ThirdTransStatusEnum thirdTransStatusEnum = shunfengSDKService.parseThirdCodeToEnum(opCode);
+    private TransStatusEnum parseThirdStateCode(String thirdStateCode, AbstractMaptrackQuerySDKService thirdService) {
+        ThirdTransStatusEnum thirdTransStatusEnum = thirdService.parseThirdCodeToEnum(thirdStateCode);
+        log.info("第三方状态枚举: {}", thirdTransStatusEnum);
         TransStatusEnum result = TransStatusEnum.UNKNOW;
         switch (thirdTransStatusEnum) {
-            case ON_THE_WAY: result = TransStatusEnum.ON_THE_WAY ;break;
-            case COLLECT: result = TransStatusEnum.COLLECT ;break;
-            case PUZZLE: result = TransStatusEnum.PUZZLE ;break;
-            case RECEIVED: result = TransStatusEnum.RECEIVED ;break;
-            case REJECT_FINISH: result = TransStatusEnum.REJECT_FINISH ;break;
-            case DISTRIBUTE: result = TransStatusEnum.DISTRIBUTE ;break;
-            case REJECT_ON_WAY: result = TransStatusEnum.REJECT_ON_WAY ;break;
-            case SWITCHING: result = TransStatusEnum.SWITCHING ;break;
-            case WAIT_CLEAR: result = TransStatusEnum.WAIT_CLEAR ;break;
-            case CLEARING: result = TransStatusEnum.CLEARING ;break;
-            case CLEARED: result = TransStatusEnum.CLEARED ;break;
-            case CLEAR_ERROR: result = TransStatusEnum.CLEAR_ERROR ;break;
-            case REJECT: result = TransStatusEnum.REJECT ;break;
-            case UNKNOW: result = TransStatusEnum.UNKNOW ;break;
-            default:break;
+            case ON_THE_WAY:
+                result = TransStatusEnum.ON_THE_WAY;
+                break;
+            case COLLECT:
+                result = TransStatusEnum.COLLECT;
+                break;
+            case PUZZLE:
+                result = TransStatusEnum.PUZZLE;
+                break;
+            case RECEIVED:
+                result = TransStatusEnum.RECEIVED;
+                break;
+            case REJECT_FINISH:
+                result = TransStatusEnum.REJECT_FINISH;
+                break;
+            case DISTRIBUTE:
+                result = TransStatusEnum.DISTRIBUTE;
+                break;
+            case REJECT_ON_WAY:
+                result = TransStatusEnum.REJECT_ON_WAY;
+                break;
+            case SWITCHING:
+                result = TransStatusEnum.SWITCHING;
+                break;
+            case WAIT_CLEAR:
+                result = TransStatusEnum.WAIT_CLEAR;
+                break;
+            case CLEARING:
+                result = TransStatusEnum.CLEARING;
+                break;
+            case CLEARED:
+                result = TransStatusEnum.CLEARED;
+                break;
+            case CLEAR_ERROR:
+                result = TransStatusEnum.CLEAR_ERROR;
+                break;
+            case REJECT:
+                result = TransStatusEnum.REJECT;
+                break;
+            case UNKNOW:
+                result = TransStatusEnum.UNKNOW;
+                break;
+            default:
+                break;
         }
         return result;
     }

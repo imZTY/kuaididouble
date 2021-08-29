@@ -3,6 +3,7 @@ package com.zty.kdd.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.zty.framework.exception.ParamCheckException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class SecretKeyServiceImpl implements SecretKeyService {
     @Override
     public SecretKeyInfoDO getSecretByAccountId(SecretKeyInfoDO secretKeyInfoReq) {
         if (secretKeyInfoReq.getAccountId() == null || secretKeyInfoReq.getAccountId() == 0) {
-            throw new IllegalArgumentException("入参缺少accountId");
+            throw new ParamCheckException("入参缺少accountId");
         }
         SecretKeyInfoDOExample example = new SecretKeyInfoDOExample();
         example.createCriteria()
@@ -58,7 +59,7 @@ public class SecretKeyServiceImpl implements SecretKeyService {
             if (Disabled.FALSE == selectResult.get(0).getDisabled()) {
                 return selectResult.get(0);
             } else {
-                throw new IllegalArgumentException("当前账号不可用");
+                throw new ParamCheckException("当前账号不可用", "accountId", secretKeyInfoReq.getAccountId().toString());
             }
         }
     }

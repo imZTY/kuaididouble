@@ -26,15 +26,17 @@ public class ZtoTest {
 
     }
 
+    // TODO: 27/8/2021 查询权限审核中
     @Test
     public void query() throws IOException {
         ZopClient client = new ZopClient(appKey, appSecret);
 
         ZopPublicRequest request = new ZopPublicRequest();
 
-        request.setBody("{\"billCode\":\"73111435816656\"}");
+        request.setBody("{\"billCode\":\"73111390619708\"}");
 
-        request.setUrl("https://japi-test.zto.com/zto.open.residualTime");
+        request.setUrl("https://japi-test.zto.com/zto.open.getRouteInfo");
+//        request.setUrl("https://japi.zto.com/zto.open.getRouteInfo");
 
         System.out.println(client.execute(request));
     }

@@ -53,10 +53,10 @@ public class TestCallExpressNewAPIService {
         long startTime = System.currentTimeMillis();
 
         System.out.println("====调用请求：" + params.get("msgData"));
-        String result = HttpClientUtil.post(CALL_URL_PROD, params);
+        String result = HttpClientUtil.post(CALL_URL_BOX, params);
 
         System.out.println("====调用丰桥的接口服务代码：" + String.valueOf(testService.getCode()) + " 接口耗时："+ String.valueOf(System.currentTimeMillis()-startTime)+"====");
-        System.out.println("===调用地址 ==="+CALL_URL_PROD);
+        System.out.println("===调用地址 ==="+CALL_URL_BOX);
         System.out.println("===顾客编码 ==="+CLIENT_CODE);
         System.out.println("===返回结果：" +result);
 
@@ -67,11 +67,12 @@ public class TestCallExpressNewAPIService {
         String jsonString = "";
 
         try {
-            InputStream is = new FileInputStream("F:\\study\\jidi\\career\\2021\\pj\\kuaididouble\\kdd-third\\kdd-third-sf\\src\\test\\resources\\callExpressRequest\\" + espServiceCode.getPath());
+            InputStream is = new FileInputStream("E:\\zty\\2021\\pj\\kuaididouble\\kdd-third\\kdd-third-sf\\src\\test\\resources\\callExpressRequest\\" + espServiceCode.getPath());
             byte[] bs = new byte[is.available()];
             is.read(bs);
             jsonString = new String(bs);
         } catch (Exception var4) {
+            var4.printStackTrace();
         }
 
         return jsonString;

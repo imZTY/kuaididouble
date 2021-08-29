@@ -3,6 +3,7 @@ package com.zty.kdd.DO;
 import java.util.Date;
 
 import com.zty.framework.dto.DataDTO;
+import com.zty.kdd.third.response.ThirdMaptrackQueryResponse;
 
 public class TransQueryLogDO extends DataDTO {
     private Integer id;
@@ -25,24 +26,66 @@ public class TransQueryLogDO extends DataDTO {
 
     private Date createTime;
 
-    public TransQueryLogDO thirdApiCompany(Byte thirdApiCompany) {
-        this.thirdApiCompany = thirdApiCompany;
-        return this;
-    }
+    public static class Builder {
 
-    public TransQueryLogDO accountId(Integer accountId) {
-        this.accountId = accountId;
-        return this;
-    }
+        private Byte thirdApiCompany;
+        private Integer accountId;
+        private String requestMsg;
+        private Long costTime;
+        private Date createTime;
 
-    public TransQueryLogDO requestMsg(String requestMsg) {
-        this.requestMsg = requestMsg;
-        return this;
-    }
+        private ThirdMaptrackQueryResponse.CommunicateResult communicateResult;
 
-    public TransQueryLogDO createTime(Date createTime) {
-        this.createTime = createTime;
-        return this;
+        public TransQueryLogDO build() {
+            TransQueryLogDO transQueryLogDO = new TransQueryLogDO();
+            transQueryLogDO.setAccountId(accountId);
+            transQueryLogDO.setThirdApiCompany(thirdApiCompany);
+            transQueryLogDO.setRequestMsg(requestMsg);
+            transQueryLogDO.setCostTime(costTime);
+            transQueryLogDO.setCreateTime(createTime);
+            if (communicateResult.getIsError() == 1) {
+                // 通信异常
+                transQueryLogDO.setIsError((byte) 1);
+                transQueryLogDO.setMessageId(communicateResult.getMessageId());
+                transQueryLogDO.setResponseMsg(communicateResult.getResponseStr());
+            } else {
+                // 成功
+                transQueryLogDO.setIsError((byte) 0);
+                transQueryLogDO.setMessageId(communicateResult.getMessageId());
+                transQueryLogDO.setResponseMsg(communicateResult.getResponseStr());
+            }
+            return transQueryLogDO;
+        }
+
+        public Builder thirdApiCompany(Byte thirdApiCompany) {
+            this.thirdApiCompany = thirdApiCompany;
+            return this;
+        }
+
+        public Builder accountId(Integer accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
+        public Builder requestMsg(String requestMsg) {
+            this.requestMsg = requestMsg;
+            return this;
+        }
+
+        public Builder createTime(Date createTime) {
+            this.createTime = createTime;
+            return this;
+        }
+
+        public Builder communicationResult(ThirdMaptrackQueryResponse.CommunicateResult communicateResult) {
+            this.communicateResult = communicateResult;
+            return this;
+        }
+
+        public Builder costTime(Long costTime) {
+            this.costTime = costTime;
+            return this;
+        }
     }
 
     public Integer getId() {

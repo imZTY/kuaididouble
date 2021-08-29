@@ -11,6 +11,9 @@
 
     <artifactId>kdd-third-yuantong</artifactId>
 
+    <properties>
+        <retrofit.version>2.9.0</retrofit.version>
+    </properties>
 
     <dependencies>
         <!-- 内部依赖 -->
@@ -19,6 +22,17 @@
             <artifactId>framework-common</artifactId>
             <version>${zty-wheels.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zty.kuaididouble</groupId>
+            <artifactId>kdd-third-facade</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-jackson -->
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-gson</artifactId>
+            <version>${retrofit.version}</version>
         </dependency>
     </dependencies>
 </project>

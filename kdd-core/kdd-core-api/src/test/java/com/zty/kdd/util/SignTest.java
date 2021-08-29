@@ -2,6 +2,8 @@ package com.zty.kdd.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author tianyi
@@ -9,11 +11,14 @@ import org.junit.Test;
  */
 public class SignTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(SignTest.class);
+
     @Test
     public void makeSign() {
-        String param = "{\"com\":\"shunfeng\",\"num\":\"SF1309231537951\",\"from\":\"北京市朝阳区\",\"phone\":\"18320444515\",\"to\":\"广东省深圳市南山区\",\"show\":\"0\",\"order\":\"desc\",\"orderTime\":\"\"}";
+        String param = "{\"com\":\"shunfeng\",\"num\":\"SF1100974978275\",\"from\":\"北京市朝阳区\",\"phone\":\"18320444515\",\"to\":\"广东省深圳市南山区\",\"show\":\"0\",\"order\":\"desc\",\"orderTime\":\"\"}";
         String customer = "6389836417";
         String key = "BynwXeDjrezYZAs359HD";
-        System.out.println(DigestUtils.md5Hex(param + key + customer).toUpperCase());
+        String sign = DigestUtils.md5Hex(param + key + customer).toUpperCase();
+        logger.info("param = {}, sign = {}", param, sign);
     }
 }

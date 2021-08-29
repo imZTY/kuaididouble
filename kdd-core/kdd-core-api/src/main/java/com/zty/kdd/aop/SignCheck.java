@@ -19,7 +19,7 @@ import com.zty.bo.api.LoginCacheApi;
 import com.zty.common.service.RoleService;
 import com.zty.framework.dto.ResultDTO;
 import com.zty.kdd.DO.SecretKeyInfoDO;
-import com.zty.kdd.ao.BaseReqAO;
+import com.zty.kdd.request.BaseRequest;
 import com.zty.kdd.service.SecretKeyService;
 
 /**
@@ -53,20 +53,29 @@ public class SignCheck {
         //原参数
         Object[] originArgs = joinPoint.getArgs();
         // 要求第一个必须的签名对象
-        BaseReqAO reqAO = (BaseReqAO)originArgs[0];
-
+        BaseRequest reqAO = (BaseRequest)originArgs[0];
 
         if (!StringUtils.isBlank(reqAO.getSign())){
             // 获取请求参数，生成签名
             String customer = reqAO.getCustomer();
             String param = reqAO.getParam();
+            if (StringUtils.isBlank(customer)) {
+                return ResultDTO.error(403, "customer为空");
+            }
+            if (StringUtils.isBlank(param)) {
+                return ResultDTO.error(403, "param为空");
+            }
             // 获取秘钥Key
             SecretKeyInfoDO secretKeyInfoDO = new SecretKeyInfoDO();
             secretKeyInfoDO.setCustomerCode(customer);
             SecretKeyInfoDO keyResult = secretKeyService.getSecretByCustomerCode(secretKeyInfoDO);
-            if (keyResult != null && StringUtils.isBlank(keyResult.getSecretKey())) {
+            if (keyResult == null) {
                 log.warn("客户号{}的秘钥不存在", customer);
-                return ResultDTO.error(400,"秘钥key未启用");
+                return ResultDTO.error(400,"客户号的秘钥不存在", customer);
+            }
+            if (StringUtils.isBlank(keyResult.getSecretKey())) {
+                log.warn("客户号{}的秘钥key未启用", customer);
+                return ResultDTO.error(400,"客户号的秘钥key未启用", customer);
             }
             String key = keyResult.getSecretKey();
             String sign = DigestUtils.md5Hex(param + key + customer).toUpperCase();
@@ -87,7 +96,7 @@ public class SignCheck {
                 return ResultDTO.error(400,"签名错误");
             }
         } else {
-            return ResultDTO.error(400,"签名为空");
+            return ResultDTO.error(403,"签名为空");
         }
     }
 }

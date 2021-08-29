@@ -1,5 +1,7 @@
 package com.zty.kdd.service.impl;
 
+import com.zty.framework.exception.BusinessException;
+import com.zty.framework.exception.ParamCheckException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,7 @@ public class BalanceServiceImpl implements BalanceService {
     @Override
     public AccountBalanceDO singleQuery(AccountBalanceDO queryDo) {
         if (queryDo.getAccountId() == null) {
-            throw new IllegalArgumentException("accountId 不可为空");
+            throw new ParamCheckException("accountId 不可为空");
         }
         AccountBalanceDO accountBalanceDO = accountBalanceDOMapper.selectByPrimaryKey(queryDo.getAccountId());
         if (accountBalanceDO == null) {
@@ -64,7 +66,7 @@ public class BalanceServiceImpl implements BalanceService {
         try {
             int rows = accountBalanceDOMapper.checkAndFrozen(queryDo);
             if (rows != 1) {
-                throw new Exception("账户冻结失败");
+                throw new BusinessException("checkAndFrozen", "账户冻结失败");
             }
             return true;
         } catch (Exception e) {
@@ -85,11 +87,11 @@ public class BalanceServiceImpl implements BalanceService {
         try {
             int rows = accountBalanceDOMapper.checkAndUnfrozen(queryDo);
             if (rows != 1) {
-                throw new Exception("账户冻结失败");
+                throw new BusinessException("checkAndUnfrozen", "账户解冻失败");
             }
             return true;
         } catch (Exception e) {
-            log.warn("冻结账户{}的余额失败，", queryDo.getAccountId(), e);
+            log.warn("解冻账户{}的余额失败，", queryDo.getAccountId(), e);
             throw e;
         }
     }
@@ -106,11 +108,11 @@ public class BalanceServiceImpl implements BalanceService {
         try {
             int rows = accountBalanceDOMapper.checkAndCut(queryDo);
             if (rows != 1) {
-                throw new Exception("账户冻结失败");
+                throw new BusinessException("checkAndCut", "实扣账户余额失败");
             }
             return true;
         } catch (Exception e) {
-            log.warn("冻结账户{}的余额失败，", queryDo.getAccountId(), e);
+            log.warn("实扣账户{}的余额失败，", queryDo.getAccountId(), e);
             throw e;
         }
     }

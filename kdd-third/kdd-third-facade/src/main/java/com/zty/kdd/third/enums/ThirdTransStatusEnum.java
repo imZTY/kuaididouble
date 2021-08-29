@@ -1,6 +1,7 @@
 package com.zty.kdd.third.enums;
 
 /**
+ * 内部第三方模块的标准状态枚举
  * @author tianyi
  * @date 2021-05-06 00:29
  */
@@ -18,6 +19,7 @@ public enum ThirdTransStatusEnum {
     CLEARED,
     CLEAR_ERROR,
     REJECT,
-    UNKNOW
+    UNKNOW,
+    NOT_EXIST
     ;
 }

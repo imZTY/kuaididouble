@@ -44,6 +44,7 @@ public class QueryTraceTest {
             param.put("data", getData());
             param.put("dataSign", SecurityUtil.sign(param, SIGN_TYPE, SECURITY_KEY,
                     CHARSET));
+            System.out.println(param);
             return param;
         } catch (Exception e) {
             e.printStackTrace();

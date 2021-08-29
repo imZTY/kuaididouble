@@ -43,5 +43,17 @@ public class SfTest {
         System.out.println(JSONObject.toJSONString(reqBody));
     }
 
+
+    @Test
+    public void numberTest() {
+        System.out.println((byte)'9');
+    }
+
+    @Test
+    public void mapGetTest() {
+        Map<String, String> map = new HashMap<>();
+        map.put("foo", "bar");
+        System.out.println(String.valueOf(map.get("hello") == null ? "" : map.get("hello")));
+    }
 }
 

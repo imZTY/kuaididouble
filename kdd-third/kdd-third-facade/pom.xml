@@ -21,13 +21,17 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.70</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.zty.kuaididouble</groupId>
-            <artifactId>kdd-core-facade</artifactId>
-            <version>${kuaididouble.version}</version>
-            <scope>compile</scope>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.3</version>
         </dependency>
     </dependencies>
 </project>

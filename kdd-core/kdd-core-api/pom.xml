@@ -45,6 +45,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.zty.kuaididouble</groupId>
+            <artifactId>kdd-third-zto</artifactId>
+            <version>${kuaididouble.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.kuaidi100-api</groupId>
             <artifactId>sdk</artifactId>
             <version>1.0.2</version>

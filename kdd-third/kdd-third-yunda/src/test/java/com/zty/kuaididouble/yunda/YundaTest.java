@@ -13,14 +13,17 @@ import org.junit.Test;
  */
 public class YundaTest {
 
+    // TODO: 27/8/2021 需沟通，开启无需订阅的接口权限
     @Test
     public void queryLocationTest() throws OpenapiException {
         //接口地址 测试地址
-        final String serverUrl = "https://devkyweixin.yundasys.com/openapi/outer/logictis/query";
-        //创建应用分配的appkey
-        final String appKey = "999999";
-        //创建应用分配的appsecret
-        final String appSecret = "04d4ad40eeec11e9bad2d962f53dda9d";
+        final String serverUrl = "https://u-openapi.yundasys.com/openapi/outer/logictis/query";
+        // 文档数据
+//        final String appKey = "999999";
+//        final String appSecret = "04d4ad40eeec11e9bad2d962f53dda9d";
+        // 测试环境
+        final String appKey = "000710";
+        final String appSecret = "7c019621a887f9635c661f77581adb16";
 
         DefaultOpenapiClient defaultOpenapiClient = new DefaultOpenapiClient(serverUrl, appKey, appSecret);
 

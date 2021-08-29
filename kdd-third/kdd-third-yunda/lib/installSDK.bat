@@ -1,0 +1,1 @@
+mvn --settings="D:\Program Files\JetBrains\settings.xml" install:install-file -DgroupId=com.yundasys.api -DartifactId=openapi-sdk-java -Dversion=1.2.0 -Dpackaging=jar -Dfile=openapi-sdk-java-1.2.0.jar
