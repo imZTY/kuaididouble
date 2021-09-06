@@ -38,15 +38,45 @@
             <artifactId>kdd-core-service</artifactId>
             <version>${kuaididouble.version}</version>
         </dependency>
+        <!-- 顺丰 -->
         <dependency>
             <groupId>com.zty.kuaididouble</groupId>
             <artifactId>kdd-third-sf</artifactId>
             <version>${kuaididouble.version}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- 中通 -->
         <dependency>
             <groupId>com.zty.kuaididouble</groupId>
             <artifactId>kdd-third-zto</artifactId>
+            <version>${kuaididouble.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- 优速 -->
+        <dependency>
+            <groupId>com.zty.kuaididouble</groupId>
+            <artifactId>kdd-third-uce</artifactId>
+            <version>${kuaididouble.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- 百世 -->
+        <dependency>
+            <groupId>com.zty.kuaididouble</groupId>
+            <artifactId>kdd-third-best</artifactId>
+            <version>${kuaididouble.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- 德邦 -->
+        <dependency>
+            <groupId>com.zty.kuaididouble</groupId>
+            <artifactId>kdd-third-deppon</artifactId>
+            <version>${kuaididouble.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- 圆通 -->
+        <dependency>
+            <groupId>com.zty.kuaididouble</groupId>
+            <artifactId>kdd-third-yto</artifactId>
             <version>${kuaididouble.version}</version>
             <scope>compile</scope>
         </dependency>

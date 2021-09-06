@@ -1,0 +1,1 @@
+mvn --settings="D:\Program Files\JetBrains\settings.xml" install:install-file -DgroupId=org.deppon.com -DartifactId=dop-sdk -Dversion=0.0.1-SNAPSHOT -Dpackaging=jar -DpomFile=dop-sdk-0.0.1-SNAPSHOT.pom -Dfile=dop-sdk-0.0.1-SNAPSHOT.jar -Dsources=dop-sdk-0.0.1-SNAPSHOT-sources.jar

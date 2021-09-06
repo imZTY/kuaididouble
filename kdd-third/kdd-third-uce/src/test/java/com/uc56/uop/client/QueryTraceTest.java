@@ -51,13 +51,13 @@ public class QueryTraceTest {
 		return ReaderXmlUtil.readXml(DATA_TYPE);
 	}
 	
-	public static void main(String[] args) {
-		
-		try {
-			String resultMsg = HttpClientUtil.sendHttpMessage(SEND_URL,sendParam());
-			System.out.println(resultMsg);
-		} catch (ClientException e) {
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//
+//		try {
+//			String resultMsg = HttpClientUtil.sendHttpMessage(SEND_URL,sendParam());
+//			System.out.println(resultMsg);
+//		} catch (ClientException e) {
+//			e.printStackTrace();
+//		}
+//	}
 }

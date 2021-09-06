@@ -1,13 +1,15 @@
 package com.zty.kdd.third.response;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 中通轨迹查询响应
  * 文档地址：https://open.zto.com/#/interface?resourceGroup=20&apiName=zto.open.getRouteInfo
  */
-public class ZtoMaptrackQueryResponse extends ThirdMaptrackQueryResponse{
+public class ZtoMaptrackQueryResponse extends ThirdMaptrackQueryResponse {
 
     /**
      * 返回信息
@@ -62,6 +64,13 @@ public class ZtoMaptrackQueryResponse extends ThirdMaptrackQueryResponse{
 
     public List<BillTrackOutput> getResult() {
         return result;
+    }
+
+    public void sortByTimeDesc() {
+        this.result = result
+                .stream()
+                .sorted(Comparator.comparing(ZtoMaptrackQueryResponse.BillTrackOutput::getScanDate).reversed())
+                .collect(Collectors.toList());
     }
 
     public void setResult(List<BillTrackOutput> result) {

@@ -23,11 +23,11 @@ public class SfTest {
 
     private static final String queryUrl = "https://sfapi-sbox.sf-express.com/std/service";
 
-    @Test
-    public void subString() {
-        String str = "{\"success\":true,\"err";
-        System.out.println(str.substring(0, 512));
-    }
+//    @Test
+//    public void subString() {
+//        String str = "{\"success\":true,\"err";
+//        System.out.println(str.substring(0, 512));
+//    }
 
     @Test
     public void order() {

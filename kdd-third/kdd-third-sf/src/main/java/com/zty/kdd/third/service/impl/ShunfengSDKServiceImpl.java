@@ -1,5 +1,6 @@
 package com.zty.kdd.third.service.impl;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import com.sf.csim.express.service.CallExpressServiceTools;
 import com.sf.csim.express.service.EspServiceCode;
 import com.sf.csim.express.service.HttpClientUtil;
 import com.zty.framework.exception.BusinessException;
+import com.zty.framework.exception.NetworkException;
 import com.zty.framework.exception.ParamCheckException;
 import com.zty.kdd.third.dto.QueryParamDTO;
 import com.zty.kdd.third.factory.impl.SFMaptrackQueryRequestFactory;
@@ -28,6 +30,7 @@ import com.zty.kdd.third.request.SFMaptrackQueryRequest;
 import com.zty.kdd.third.request.ThirdMaptrackQueryRequest;
 import com.zty.kdd.third.enums.ThirdTransStatusEnum;
 import com.zty.kdd.third.service.AbstractMaptrackQuerySDKService;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 顺丰物流查询，SDK对接实现
@@ -114,6 +117,9 @@ public class ShunfengSDKServiceImpl extends AbstractMaptrackQuerySDKService<SFMa
         } catch (UnsupportedEncodingException e) {
             logger.error("顺丰物流查询，生成请求报文时加密出错", e);
             throw new BusinessException("ShunfengSDKServiceImpl", "顺丰物流查询，生成请求报文时加密出错" + e.getMessage());
+        } catch (IOException e) {
+            logger.error("顺丰物流查询，网络异常", e);
+            throw new NetworkException("顺丰物流查询，网络异常:" + e.getMessage());
         }
     }
 
@@ -123,6 +129,7 @@ public class ShunfengSDKServiceImpl extends AbstractMaptrackQuerySDKService<SFMa
      */
     @Override
     protected ThirdMaptrackQueryResponse.CommunicateResult parseCommunicateResult(SFMaptrackQueryResponse sfMaptrackQueryResponse, String responseStr) {
+        logger.debug("顺丰查询 开始检查是否通信成功, {}", sfMaptrackQueryResponse.getApiResultCode());
         if ("A1000".equals(sfMaptrackQueryResponse.getApiResultCode())) {
             // 通信成功
             return new ThirdMaptrackQueryResponse.CommunicateResult((byte) 0, sfMaptrackQueryResponse.getApiResponseID(), responseStr);
@@ -139,8 +146,10 @@ public class ShunfengSDKServiceImpl extends AbstractMaptrackQuerySDKService<SFMa
     @Override
     protected ThirdMaptrackQueryResponse.BusinessResult parseBusinessResult(SFMaptrackQueryResponse sfMaptrackQueryResponse) {
         SFMaptrackQueryResponse.ResultData apiResultData = sfMaptrackQueryResponse.getApiResultData();
+        logger.debug("顺丰查询 开始检查是否业务成功, {}", apiResultData.getSuccess());
         if (BooleanUtils.isNotTrue(apiResultData.getSuccess())) {
             // 业务失败
+            logger.warn("顺丰查询 业务失败, {}, {}", apiResultData.getErrorCode(), apiResultData.getErrorMsg());
             return new ThirdMaptrackQueryResponse.BusinessResult(false, apiResultData.getErrorCode(), apiResultData.getErrorMsg());
         } else {
             // 业务成功
@@ -149,6 +158,11 @@ public class ShunfengSDKServiceImpl extends AbstractMaptrackQuerySDKService<SFMa
             MsgDataDTO respData = apiResultData.getMsgData();
             // 取与查询运单号匹配的响应（目前没有批量查询场景，所以获取第一个就行）
             MsgDataDTO.RouteRespsDTO transRouteMsg = respData.getRouteResps().get(0);
+            if (CollectionUtils.isEmpty(transRouteMsg.getRoutes())) {
+                // 无轨迹
+                logger.warn("顺丰查询 无轨迹结果");
+                return businessResult;
+            }
             // 【重点1】设置物流当前的运输状态
             // 获取最新的state（内含降序排序功能）
             businessResult.setThirdStateCode(transRouteMsg.getNewestOpCode());

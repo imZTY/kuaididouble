@@ -48,6 +48,18 @@ public class MaptrackApiImpl implements MaptrackApi {
     @Resource(name = "ZTO_SDK")
     private AbstractMaptrackQuerySDKService ztoSDKService;
 
+    @Resource(name = "UCE_SDK")
+    private AbstractMaptrackQuerySDKService uceSDKService;
+
+    @Resource(name = "Best_SDK")
+    private AbstractMaptrackQuerySDKService bestSDKService;
+
+    @Resource(name = "DBL_SDK")
+    private AbstractMaptrackQuerySDKService depponSDKServic;
+
+    @Resource(name = "YTO_service")
+    private AbstractMaptrackQuerySDKService ytoServic;
+
     /**
      * KEY: 在线文档定义的内部码值
      * VALUE: 具体物流服务BEAN
@@ -60,6 +72,14 @@ public class MaptrackApiImpl implements MaptrackApi {
         THIRD_SERVICE_MAP.put("SF", shunfengSDKService);
         // 中通SDK服务 TODO 审核未通过 测试数据不全 未验证
         THIRD_SERVICE_MAP.put("ZTO", ztoSDKService);
+        // 优速SDK服务
+        THIRD_SERVICE_MAP.put("UCE", uceSDKService);
+        // 百世SDK服务
+        THIRD_SERVICE_MAP.put("BEST", bestSDKService);
+        // 德邦SDK服务
+        THIRD_SERVICE_MAP.put("DBL", depponSDKServic);
+        // 圆通服务
+        THIRD_SERVICE_MAP.put("YTO", ytoServic);
     }
 
     @Autowired
@@ -136,7 +156,7 @@ public class MaptrackApiImpl implements MaptrackApi {
             } else {
                 // 业务失败
                 maptrackQueryResponse.setState(TransStatusEnum.UNKNOW.getStringValue());
-                maptrackQueryResponse.setMessage("第三方业务响应失败");
+                maptrackQueryResponse.setMessage(StatusCodeEnum.QUERY_FAIL.getMessage());
                 maptrackQueryResponse.setStatus(StatusCodeEnum.QUERY_FAIL.getStringCode());
             }
         } else {

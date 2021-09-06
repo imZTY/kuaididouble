@@ -46,16 +46,19 @@ public class MaptrackController {
         AccountBalanceDO accountBalanceDO = new AccountBalanceDO().accountId(reqAO.getCurrentUID());
         try {
             // 检查并预扣余额
+            log.info("检查并预扣余额, {}", accountBalanceDO.getAccountId());
             balanceService.checkAndFrozen(accountBalanceDO);
             MaptrackQueryResponse successResp = null;
             try {
                 successResp = maptrackApi.singleQuery(reqAO);
             } catch (Exception e) {
                 // 解冻余额
+                log.info("解冻余额, {}", accountBalanceDO.getAccountId());
                 balanceService.checkAndUnfrozen(accountBalanceDO);
                 throw e;
             }
             // 实扣余额
+            log.info("实扣余额, {}", accountBalanceDO.getAccountId());
             balanceService.checkAndCut(accountBalanceDO);
             return ResultDTO.success(successResp);
         } catch (ParamCheckException e) {

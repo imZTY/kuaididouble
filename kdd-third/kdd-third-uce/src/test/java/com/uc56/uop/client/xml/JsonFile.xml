@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jsonData name="json">
-{"bill":{
+<!--{"bill":{
 	"billCode":"661276759533,661347859631,668071163592",
 	"orderCode":"",
 	"queryType":"0"
+	}
+}-->
+<jsonData name="json">
+{"bill":{
+	"billCode":"518270309160",
+	"orderCode":"",
+	"queryType":"1"
 	}
 }
 </jsonData>

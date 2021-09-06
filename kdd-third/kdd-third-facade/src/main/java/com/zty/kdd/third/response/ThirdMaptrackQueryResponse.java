@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -116,7 +117,7 @@ public class ThirdMaptrackQueryResponse implements Serializable {
         /**
          * 轨迹节点数据，倒序排列
          */
-        private List<ThirdTrackDataDTO> thirdTrackDataList;
+        private List<ThirdTrackDataDTO> thirdTrackDataList = new ArrayList<>();  //默认为空数组
 
         public BusinessResult(boolean success, String errorCode, String errorMsg) {
             this.success = success;

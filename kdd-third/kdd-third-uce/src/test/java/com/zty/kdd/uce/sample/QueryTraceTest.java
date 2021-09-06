@@ -15,8 +15,8 @@ public class QueryTraceTest {
     //发送地址
 //	public static final String SEND_URL = "http://localhost:8084/com.uc56.uop.main/gateway/gateway.action";
 //	public static final String SEND_URL = "http://192.168.0.31/com.uc56.uop.main/gateway/gateway.action";
-    public static final String SEND_URL = "http://uop.uc56.com/gateway/gateway.action";
-//    public static final String SEND_URL = "http://uop.sit.uc56.com/uce-uop-main/gateway/gateway.action";
+//    public static final String SEND_URL = "http://uop.uc56.com/gateway/gateway.action";
+    public static final String SEND_URL = "http://uop.sit.uc56.com/uce-uop-main/gateway/gateway.action";
     //字符集
     public static final String CHARSET = "GBK";
 
@@ -56,8 +56,36 @@ public class QueryTraceTest {
         return ReaderXmlUtil.readXml(DATA_TYPE);
     }
 
+    /**
+     * 响应示例:
+     * {
+     *   "traceList": {
+     *     "trace": [
+     *       {
+     *         "billCode": "66824545122",
+     *         "orderCode": "",
+     *         "actionTime": "2012-12-16 12:22:20",
+     *         "orgName ": "虎门网点",
+     *         "actionContent": "虎门网点已收入",
+     *         "actionType": "GOT",
+     *         "person": "",
+     *         "tel": ""
+     *       },
+     *       {
+     *         "billCode": "66824545122",
+     *         "orderCode": "",
+     *         "actionTime": "2012-12-16 12:22:20",
+     *         "orgName ": "黄浦网点",
+     *         "actionContent ": "黄浦网点派件已签收",
+     *         "actionType ": "SIGNED",
+     *         "person": "卢旺达",
+     *         "tel": "13764115252"
+     *       }
+     *     ]
+     *   }
+     * }
+     */
     public static void main(String[] args) {
-
         try {
             String resultMsg = HttpClientUtil.sendHttpMessage(SEND_URL,sendParam());
             System.out.println(resultMsg);

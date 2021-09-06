@@ -1,0 +1,15 @@
+海外轨迹对接的传入参数 params 所对应的实体为：AbroadTraceReqInfo
+快递电子面单同步筛单的传入参数 params所对应的实体为：EwbOrderAddReqInfo
+电子面单取消 的传入参数 params所对应的实体为：ExpSieveOrderDTO
+快递电子运单下单的传入参数 params所对应的实体为：EwbNewOrderInfo
+九牧零担单子运单的传入参数 params所对应的实体为：JiumuLtlResultVo
+电子 运单 零担(Lcl) 同步筛单的传入参数 params所对应的实体为：LtlSieveOrderRespVo
+创建订单的传入参数 params所对应的实体为:ExpSieveOrderDTO
+查询订单的传入参数 params所对应的实体为：QueryOrderInfoRequest
+修改订单的传入参数 params所对应的实体为：ExpSieveOrderDTO
+撤销订单的传入参数 params所对应的实体为：CancleOrderEntity
+网点查询的传入参数 params所对应的实体为：DeptNearbyRequest
+价格时效查询的传入参数 params所对应的实体为：QueryPriceRequest
+新价格时效查询的传入参数 params所对应的实体为：PriceTimeRequestVO
+沙箱提供轨迹订阅测试接口 params所对应的实体为：Param
+沙箱标准货物追踪接口 params所对应的实体为:TraceOrderReqInfo

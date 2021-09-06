@@ -25,6 +25,7 @@ import com.zty.kdd.third.service.AbstractMaptrackQuerySDKService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author: tianyi.zeng
@@ -102,7 +103,7 @@ public class ZtoSDKServiceImpl extends AbstractMaptrackQuerySDKService<ZtoMaptra
             response = JSON.parseObject(respStr, ZtoMaptrackQueryResponse.class);
         } catch (Exception e) {
             log.error("中通查询，响应报文解析异常", e);
-            throw new BusinessException("500", "", e);
+            throw new BusinessException("ZtoSDKServiceImpl", "中通查询，响应报文解析异常", e);
         }
         // 通信结果
         response.setCommuniecationResult(this.parseCommunicateResult(response, respStr));
@@ -172,10 +173,19 @@ public class ZtoSDKServiceImpl extends AbstractMaptrackQuerySDKService<ZtoMaptra
      */
     @Override
     protected ThirdMaptrackQueryResponse.BusinessResult parseBusinessResult(ZtoMaptrackQueryResponse ztoMaptrackQueryResponse) {
+        log.debug("中通查询 开始检查是否业务成功, {}", ztoMaptrackQueryResponse.isSuccess());
         if (ztoMaptrackQueryResponse.isSuccess()) {
             // 业务成功
             ThirdMaptrackQueryResponse.BusinessResult businessResult = new ThirdMaptrackQueryResponse.BusinessResult(true, ztoMaptrackQueryResponse.getStatusCode(), ztoMaptrackQueryResponse.getMessage());
-            List<ZtoMaptrackQueryResponse.BillTrackOutput> descSortedResult = descSort(ztoMaptrackQueryResponse.getResult());
+            if (CollectionUtils.isEmpty(ztoMaptrackQueryResponse.getResult())) {
+                // 无轨迹
+                log.warn("中通查询 无轨迹结果");
+                return businessResult;
+            } else {
+                // 降序排序
+                ztoMaptrackQueryResponse.sortByTimeDesc();
+            }
+            List<ZtoMaptrackQueryResponse.BillTrackOutput> descSortedResult = ztoMaptrackQueryResponse.getResult();
             ztoMaptrackQueryResponse.setResult(descSortedResult);
             // 【重点1】设置物流当前的运输状态
             businessResult.setThirdStateCode(descSortedResult.get(0).getScanType());
@@ -189,13 +199,6 @@ public class ZtoSDKServiceImpl extends AbstractMaptrackQuerySDKService<ZtoMaptra
             // 业务失败
             return new ThirdMaptrackQueryResponse.BusinessResult(false, ztoMaptrackQueryResponse.getStatusCode(), ztoMaptrackQueryResponse.getMessage());
         }
-    }
-
-    private List<ZtoMaptrackQueryResponse.BillTrackOutput> descSort(List<ZtoMaptrackQueryResponse.BillTrackOutput> originResult) {
-        return originResult
-                .stream()
-                .sorted(Comparator.comparing(ZtoMaptrackQueryResponse.BillTrackOutput::getScanDate).reversed())
-                .collect(Collectors.toList());
     }
 
     private ThirdMaptrackQueryResponse.ThirdTrackDataDTO parseThirdTrackData(ZtoMaptrackQueryResponse.BillTrackOutput billTrackOutput) {

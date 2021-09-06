@@ -61,10 +61,10 @@ public abstract class AbstractMaptrackQuerySDKService<F extends ThirdMaptrackQue
     /**
      * 解析并获取第三方通信结果
      */
-    protected abstract ThirdMaptrackQueryResponse.CommunicateResult parseCommunicateResult(R thirdMaptrackQueryResponse, String responseStr);
+    protected abstract ThirdMaptrackQueryResponse.CommunicateResult parseCommunicateResult(R response, String responseStr);
 
     /**
      * 解析并获取第三方业务结果
      */
-    protected abstract ThirdMaptrackQueryResponse.BusinessResult parseBusinessResult(R thirdMaptrackQueryResponse);
+    protected abstract ThirdMaptrackQueryResponse.BusinessResult parseBusinessResult(R response);
 }

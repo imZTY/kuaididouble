@@ -12,10 +12,19 @@ import org.slf4j.LoggerFactory;
 public enum CompanyEnum {
 
 
-    SHUNFENG("SF", "顺丰速运", (byte)1, null);
+    SHUNFENG("SF", "顺丰速运", (byte)1, null),
+    YOUSU("UCE", "优速快递", (byte)2, null),
+    ZTO("ZTO", "中通快递", (byte)3, null),
+    BEST("BEST", "百世快递", (byte)4, null),
+    YUANTONG("YTO", "圆通快递", (byte)5, null),
+    DEBANG("DBL", "德邦快递", (byte)6, null)
+    ;
 
     private static final Logger logger = LoggerFactory.getLogger(CompanyEnum.class);
 
+    /**
+     * 需是我们kdd对外定义的API KEY
+     */
     private String apikey;
 
     private String name;
