@@ -53,7 +53,7 @@ public class YuantongApiUtil {
     private final static String METHOD = "track_query_adapter";
 
 //    private final static String JENKINS_URI = "https://openuat.yto56.com.cn:6443/open/track_query_adapter/";//测试
-    private final static String JENKINS_URI = "https://openapi.yto.net.cn:11443/open/track_query_adapter/";//生产
+    private final static String YTO_URL = "https://openapi.yto.net.cn:11443/open/track_query_adapter/";//生产
 
 
     static {
@@ -84,7 +84,7 @@ public class YuantongApiUtil {
         // 创建Retrofit实例
         Retrofit retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl(Objects.requireNonNull(JENKINS_URI))
+                .baseUrl(Objects.requireNonNull(YTO_URL))
                 // 添加格式转换器
                 .addConverterFactory(new StringConverterFactory())   //响应报文为空的场景，其他转换器会出现异常
                 .addConverterFactory(GsonConverterFactory.create())  // 解析

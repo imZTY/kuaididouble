@@ -52,6 +52,34 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/product',
+    redirect: '/product/index',
+    component: Layout,
+    meta: { role: [1, 4] },
+    children: [
+      {
+        path: 'index',
+        name: 'product',
+        component: () => import('@/views/product/index'),
+        meta: { title: '产品管理', icon: 'interface', role: [1, 4] }
+      }
+    ]
+  },
+  {
+    path: '/charge',
+    redirect: '/charge/index',
+    component: Layout,
+    meta: { role: [1, 4] },
+    children: [
+      {
+        path: 'index',
+        name: 'charge',
+        component: () => import('@/views/charge/index'),
+        meta: { title: '收费规则', icon: 'charge', role: [1, 4] }
+      }
+    ]
+  },
+  {
     path: '/order',
     redirect: '/order/index',
     component: Layout,

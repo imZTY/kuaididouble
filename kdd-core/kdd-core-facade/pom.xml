@@ -19,6 +19,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>account-common</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.zty.kuaididouble</groupId>
             <artifactId>kdd-third-facade</artifactId>
             <scope>compile</scope>

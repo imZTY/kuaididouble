@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>kdd-third-facade</artifactId>
-    <version>${kuaididouble.version}</version>
 
     <dependencies>
         <dependency>
@@ -31,7 +30,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.2.3</version>
         </dependency>
     </dependencies>
 </project>

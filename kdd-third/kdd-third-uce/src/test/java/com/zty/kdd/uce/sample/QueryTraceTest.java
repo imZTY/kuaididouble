@@ -15,7 +15,7 @@ public class QueryTraceTest {
     //发送地址
 //	public static final String SEND_URL = "http://localhost:8084/com.uc56.uop.main/gateway/gateway.action";
 //	public static final String SEND_URL = "http://192.168.0.31/com.uc56.uop.main/gateway/gateway.action";
-//    public static final String SEND_URL = "http://uop.uc56.com/gateway/gateway.action";
+//    public static final String SEND_URL = "http://uop.uce.cn/uce-uop-main/gateway/gateway.action";
     public static final String SEND_URL = "http://uop.sit.uc56.com/uce-uop-main/gateway/gateway.action";
     //字符集
     public static final String CHARSET = "GBK";

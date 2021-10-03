@@ -38,7 +38,7 @@ public class UceSDKServiceImpl extends AbstractMaptrackQuerySDKService<UceMaptra
     /**
      * API网关地址
      */
-    public static final String SEND_URL = "http://uop.uc56.com/gateway/gateway.action";
+    public static final String SEND_URL = "http://uop.uce.cn/uce-uop-main/gateway/gateway.action";
 //    public static final String SEND_URL = "http://uop.sit.uc56.com/uce-uop-main/gateway/gateway.action";
 
     //字符集
@@ -51,10 +51,11 @@ public class UceSDKServiceImpl extends AbstractMaptrackQuerySDKService<UceMaptra
     public static final String DATA_TYPE = "json";
 
     //密钥
-    public static final String SECURITY_KEY = "5638725980faa155669d52616064f7f1";
+//    public static final String SECURITY_KEY = "5638725980faa155669d52616064f7f1";
+    public static final String SECURITY_KEY = "8574f4f971f07a6bb189ee03e009cd24";
     //合作伙伴编号
-    public static final String PARTNER = "80448440";
-//    public static final String PARTNER = "80239383";
+//    public static final String PARTNER = "80448440";
+    public static final String PARTNER = "900569039";
 
     //调用的服务(映射的方法名)
     private static final String SERVER_NAME = "query_trace";

@@ -12,7 +12,8 @@
     <artifactId>kdd-app</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>kdd-app-aio</module>
+        <module>kdd-app-cms</module>
+        <module>kdd-app-api</module>
     </modules>
 
 

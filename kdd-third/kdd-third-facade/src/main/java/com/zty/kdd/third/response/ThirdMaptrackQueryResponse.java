@@ -23,14 +23,20 @@ public class ThirdMaptrackQueryResponse implements Serializable {
     /**
      * 判断是否通信成功
      */
-    public boolean isCommunicateSuccess() {
+    public Boolean isCommunicateSuccess() {
+        if (this.communicateResult == null) {
+            return null;
+        }
         return this.communicateResult.getIsError() == 0;
     }
 
     /**
      * 判断是否业务成功
      */
-    public boolean isBusinessSuccess() {
+    public Boolean isBusinessSuccess() {
+        if (this.businessResult == null) {
+            return null;
+        }
         return this.businessResult.isSuccess();
     }
 

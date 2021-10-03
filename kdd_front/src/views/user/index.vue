@@ -27,10 +27,14 @@
         </el-table-column>
         <el-table-column fixed='right' label='操作' align='center'>
           <template slot-scope='scope'>
-            <el-button type='info' size='mini' @click='viewDetail(scope.row)'>查看详情</el-button>
-            <el-button type='primary' size='mini' @click='editUser(scope.row)'>编辑</el-button>
-            <el-button type='warning' size='mini' @click='charge(scope.row)'>充值</el-button>
-            <el-button type='danger' size='mini' @click='editPassword(scope.row)'>重置密码</el-button>
+            <div>
+              <el-button type='info' size='mini' @click='viewDetail(scope.row)'>查看详情</el-button>
+              <el-button type='primary' size='mini' @click='editUser(scope.row)'>编辑</el-button>
+            </div>
+            <div>
+              <el-button type='warning' size='mini' @click='charge(scope.row)'>充值</el-button>
+              <el-button type='danger' size='mini' @click='editPassword(scope.row)'>重置密码</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

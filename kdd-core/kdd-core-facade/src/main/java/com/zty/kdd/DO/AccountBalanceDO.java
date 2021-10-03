@@ -3,7 +3,11 @@ package com.zty.kdd.DO;
 import com.zty.framework.dto.DataDTO;
 
 public class AccountBalanceDO extends DataDTO {
+    private Integer id;
+
     private Integer accountId;
+
+    private Integer productId;
 
     private Long totalBalance;
 
@@ -18,12 +22,28 @@ public class AccountBalanceDO extends DataDTO {
         return this;
     };
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Integer getAccountId() {
         return accountId;
     }
 
     public void setAccountId(Integer accountId) {
         this.accountId = accountId;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public Long getTotalBalance() {

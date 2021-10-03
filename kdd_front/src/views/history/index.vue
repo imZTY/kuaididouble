@@ -84,6 +84,24 @@ export default {
       if (rowdata.thirdApiCompany == 1) {
         return '顺丰速运'
       }
+      if (rowdata.thirdApiCompany == 2) {
+        return '优速快递'
+      }
+      if (rowdata.thirdApiCompany == 3) {
+        return '中通快递'
+      }
+      if (rowdata.thirdApiCompany == 4) {
+        return '百世快递'
+      }
+      if (rowdata.thirdApiCompany == 5) {
+        return '圆通快递'
+      }
+      if (rowdata.thirdApiCompany == 6) {
+        return '德邦快递'
+      }
+      if (rowdata.thirdApiCompany == 7) {
+        return '快递鸟'
+      }
       return '未知('+rowdata.thirdApiCompany+')'
     },
     parseIsError(rowdata) {
