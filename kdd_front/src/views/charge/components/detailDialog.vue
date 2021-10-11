@@ -8,30 +8,37 @@
       :before-close="cancel"
     >
       <div style="display: flex; align-items: center; margin: 16px">
-        <span style="width: 30%; text-align: center">产品名称</span>
-        <span v-if="detailParam.type == 3" style="width: 70%; text-align: left">{{ detailParam.name }}</span>
-        <el-input v-else v-model="detailParam.name" placeholder="请输入产品名称" :maxlength="15" show-word-limit clearable
+        <span style="width: 30%; text-align: center">规则名称</span>
+        <span v-if="detailParam.type == 3" style="width: 70%; text-align: left">{{ detailParam.chargeName }}</span>
+        <el-input v-else v-model="detailParam.chargeName" placeholder="请输入规则名称" :maxlength="15" show-word-limit clearable
            :style="{width: '100%'}"></el-input>
       </div>
       <div style="display: flex; align-items: center; margin: 16px">
-        <span style="width: 30%; text-align: center">父产品id</span>
-        <span v-if="detailParam.type == 3" style="width: 70%; text-align: left">{{ detailParam.parentId }}</span>
-        <el-select v-else v-model="detailParam.parentId" placeholder="请选择父产品" clearable :style="{width: '100%'}">
-          <el-option v-for="(item, index) in parentOptions" :key="index" :label="item.label"
+        <span style="width: 30%; text-align: center">充值币种</span>
+        <span v-if="detailParam.type == 3" style="width: 70%; text-align: left">{{ detailParam.chargeCurr }}</span>
+        <el-select v-else v-model="detailParam.chargeCurr" placeholder="请选择充值币种" clearable :style="{width: '100%'}">
+          <el-option v-for="(item, index) in chargeCurrs" :key="index" :label="item.label"
             :value="item.value" :disabled="item.disabled"></el-option>
         </el-select>
       </div>
       <div style="display: flex; align-items: center; margin: 16px">
-        <span style="width: 25%; text-align: center;">排序级别</span>
-        <span v-if="detailParam.type == 3" style="width: 70%; text-align: left">{{ detailParam.sortIndex }}</span>
+        <span style="width: 25%; text-align: center;">充值金额(元)</span>
+        <span v-if="detailParam.type == 3" style="width: 70%; text-align: left">{{ detailParam.chargePriceYuan }}</span>
         <div v-else style="width: 70%; text-align: left; padding: 0 15px">
-          <el-input-number  v-model="detailParam.sortIndex" clearable style="width: 50%; text-align: left" placeholder="请输入排序级别"></el-input-number>
+          <el-input-number  v-model="detailParam.chargePriceYuan" clearable style="width: 50%; text-align: left" placeholder="请输入充值金额"></el-input-number>
         </div>
       </div>
       <div style="display: flex; align-items: center; margin: 16px">
-        <span style="width: 30%; text-align: center">产品描述</span>
+        <span style="width: 25%; text-align: center;">充值笔数</span>
+        <span v-if="detailParam.type == 3" style="width: 70%; text-align: left">{{ detailParam.amount }}</span>
+        <div v-else style="width: 70%; text-align: left; padding: 0 15px">
+          <el-input-number  v-model="detailParam.amount" clearable style="width: 50%; text-align: left" placeholder="请输入充值笔数"></el-input-number>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; margin: 16px">
+        <span style="width: 30%; text-align: center">规则描述</span>
         <span v-if="detailParam.type == 3" style="width: 70%; text-align: left">{{ detailParam.description }}</span>
-        <el-input v-else v-model="detailParam.description" placeholder="请输入产品描述" :maxlength="100" show-word-limit
+        <el-input v-else v-model="detailParam.description" placeholder="请输入规则描述" :maxlength="100" show-word-limit
          :style="{width: '100%'}"></el-input>
       </div>
 
@@ -60,7 +67,7 @@
   </div>
 </template>
 <script>
-import { add, update } from "@/api/product"
+import { add, update } from "@/api/charge"
 import { Message } from 'element-ui'
 export default {
   name: 'DetailDialog',
@@ -76,47 +83,44 @@ export default {
       default: function() {
         return {
           type: 0,  // type: 0=未知，1=新增，2=修改，3=详情
-          name: "",  //产品名称
-          parentId: 0,  //父产品
+          chargeName: "",  //规则名称
+          chargeCurr: "",  //充值币种
+          chargePriceYuan: 0,  //充值金额(元)
+          chargePrice: 0,  //充值金额(元)
+          amount: 0,  //充值数量
           description: "",  //描述
-          sortIndex: 0  //排序级别
         }
       }
     }
   },
   data() {
     return {
-      parentOptions: [{
-        "label": "根",
-        "value": 0
-      },{
-        "label": "限时促销",
-        "value": 1
-      },{
-        "label": "电子面单",
-        "value": 2
-      },{
-        "label": "物流查询",
-        "value": 3
+      chargeCurrs: [{
+        "label": "人民币",
+        "value": "CNY"
       }]
     }
   },
   computed: {},
   watch: {},
-  created() {},
-  mounted() {},
+  created() {
+  },
+  mounted() {
+  },
   methods: {
     cancel() {
       this.$emit('cancel')
     },
     confirmAdd() {
+      var that = this
       //编辑接口
       var data = this.detailParam;
       add({
-        name: data.name,
-        sortIndex: data.sortIndex,
-        description: data.description,
-        parentId: data.parentId
+        chargeName: data.chargeName,
+        chargeCurr: data.chargeCurr,
+        chargePrice: data.chargePriceYuan * 100,
+        amount: data.amount,
+        description: data.description
       }).then(
         function(res) {
           // success
@@ -125,7 +129,7 @@ export default {
             type: 'success',
             duration: 1000
           })
-          this.cancel()
+          that.cancel()
         },
         function(e) {
           // failure
@@ -139,14 +143,16 @@ export default {
       )
     },
     confirmUpdate() {
+      var that = this
       //编辑接口
       var data = this.detailParam;
       update({
         id: data.id,
-        name: data.name,
-        sortIndex: data.sortIndex,
-        description: data.description,
-        parentId: data.parentId
+        chargeName: data.chargeName,
+        chargeCurr: data.chargeCurr,
+        chargePrice: data.chargePriceYuan * 100,
+        amount: data.amount,
+        description: data.description
       }).then(
         function(res) {
           // success
@@ -155,7 +161,7 @@ export default {
             type: 'success',
             duration: 1000
           })
-          this.cancel()
+          that.cancel()
         },
         function(e) {
           // failure

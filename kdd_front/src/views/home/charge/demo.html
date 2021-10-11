@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+      .rule-box {
+        display: flex;
+      }
+      .rule {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 5px;
+      }
+      .rule-detail {
+        width: 250px;
+        height: 200px;
+        padding: 5px;
+        border: 1px solid #000;
+        margin-right: 5px;
+      }
+      .rule-detail.active {
+        background-color: skyblue;
+      }
+      .fee {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h3>产品服务订阅</h3>
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane :label="v.name" :name="v.id" v-for="v in root">
+          <el-row>
+            产品类型:
+            <template v-for="cat in cats">
+              <el-button type="primary" v-if="activeCat == cat.id"
+                >{{ cat.name }}</el-button
+              >
+              <el-button v-if="activeCat != cat.id">{{ cat.name }}</el-button>
+            </template>
+          </el-row>
+          <div class="rule-box">
+            <div>套餐说明:</div>
+            <div class="rule">
+              <div
+                class="rule-detail"
+                :class="{active: rule.id == activeRuleId}"
+                v-for="rule in rules"
+                @click="changeRule(rule)"
+              >
+                <el-row
+                  >{{rule.value}}&nbsp;&nbsp;<el-button
+                    type="danger"
+                    plain
+                    size="mini"
+                    >{{rule.label}}</el-button
+                  ></el-row
+                >
+                <el-row>{{rule.account}}&nbsp;&nbsp;{{rule.limit}}</el-row>
+              </div>
+            </div>
+          </div>
+          <div>
+            当前选择:
+            {{activeRule.account}}&nbsp;&nbsp;{{activeRule.limit}}&nbsp;&nbsp;{{activeRule.validityPeriod}}
+          </div>
+          <div class="fee">应付金额: {{activeRule.value}}</div>
+          <el-button type="primary">确定订购</el-button>
+          <div>
+            确认并同意 <a href="javascript:void(0)">《快递鸟服务电子协议》</a>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+    <script>
+      var vm = new Vue({
+        el: "#app",
+        data() {
+          return {
+            root: [
+              { name: "限时抢购", id: "a" },
+              { name: "物流查询", id: "b" },
+              { name: "电子面单", id: "c" },
+              { name: "物流短信", id: "d" },
+            ],
+            activeName: "b",
+            cats: [
+              { name: "在线监控", id: "a" },
+              { name: "快递查询", id: "b" },
+              { name: "物流查询", id: "c" },
+              { name: "在途监控", id: "d" },
+            ],
+            activeCat: "b",
+            rules: [
+              {
+                id: "a",
+                value: "￥ 2800",
+                label: "按次计费",
+                account: "8000次",
+                limit: "约200次/天",
+                validityPeriod: "有效期一年",
+                active: true,
+              },
+              {
+                id: "b",
+                value: "￥ 2800",
+                label: "按次计费",
+                account: "8000次",
+                limit: "约200次/天",
+                validityPeriod: "有效期一年",
+              },
+              {
+                id: "c",
+                value: "￥ 2800",
+                label: "按次计费",
+                account: "8000次",
+                limit: "约200次/天",
+                validityPeriod: "有效期一年",
+              },
+              {
+                id: "d",
+                value: "￥ 2800",
+                label: "按次计费",
+                account: "8000次",
+                limit: "约200次/天",
+                validityPeriod: "有效期一年",
+              },
+            ],
+            activeRuleId: "a",
+            activeRule: {},
+          };
+        },
+        methods: {
+          handleClick(tab, event) {
+            console.log(tab, event);
+          },
+          changeRule(rule) {
+            this.activeRuleId = rule.id;
+          },
+        },
+        created() {
+          this.activeRule = this.rules[0];
+        },
+      });
+    </script>
+  </body>
+</html>

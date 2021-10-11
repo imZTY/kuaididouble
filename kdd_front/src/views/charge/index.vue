@@ -29,10 +29,11 @@
         ></el-pagination>
       </div>
       <el-table :data="chargeList" border style="text-align: center;">
-        <el-table-column prop="name" label="产品名称" align="center" />
-        <el-table-column prop="parentId" :formatter="parseParentId" label="父产品id" align="center" />
+        <el-table-column prop="chargeName" label="规则名称" align="center" />
         <el-table-column prop="description" label="产品描述" align="center" />
-        <el-table-column prop="sortIndex" label="排序级别" align="center" />
+        <el-table-column prop="chargeCurr" label="充值币种" align="center" />
+        <el-table-column prop="chargePrice" :formatter="fenToYuan" label="充值金额(元)" align="center" />
+        <el-table-column prop="amount" label="充值条数" align="center" />
         <el-table-column prop="disbaled" :formatter="parseDisabled" label="状态" align="center" />
         <el-table-column prop="createTime" :formatter="timestampToDateStr" label="创建时间" align="center" />
         <el-table-column prop="updateTime" :formatter="timestampToDateStr" label="修改时间" align="center" />
@@ -86,10 +87,12 @@ export default {
       currentPage: 1,
       detailParam: {
         type: 0,  // type: 0=未知，1=新增，2=修改，3=详情
-        name: "",  //产品名称
-        parentId: 0,  //父产品
+        chargeName: "",  //规则名称
         description: "",  //描述
-        sortIndex: 0  //排序级别
+        chargeCurr: "",  //充值币种
+        chargePrice: 0,  //充值金额
+        chargePriceYuan: 0,  //充值金额(元)
+        amount: 0  //充值条数
       },
       chargeList: [
         //模拟接口数据
@@ -100,18 +103,8 @@ export default {
     this.getListByPage(1)
   },
   methods: {
-    parseParentId(rowdata) {
-      if (rowdata.parentId == 0) {
-        return "根"
-      } else if (rowdata.parentId == 1) {
-        return "限时促销"
-      } else if (rowdata.parentId == 2) {
-        return "电子面单"
-      } else if (rowdata.parentId == 3) {
-        return "快递查询"
-      } else {
-        return "未知"
-      }
+    fenToYuan(rowdata) {
+      return rowdata.chargePrice / 100;
     },
     parseDisabled(rowdata) {
       if (rowdata.disabled == 0) {
@@ -177,18 +170,20 @@ export default {
       //显示修改对话框
       this.detailParam.type = type  // type: 0=未知，1=新增，2=修改，3=详情
       if (type == 1) {
-        this.detailParam.name = null
-        this.detailParam.parentId = 0
+        this.detailParam.chargeName = null
         this.detailParam.description = null
-        this.detailParam.sortIndex = 1
+        this.detailParam.chargeCurr = "CNY"
+        this.detailParam.chargePrice = 0
+        this.detailParam.chargePriceYuan = this.detailParam.chargePrice / 100
+        this.detailParam.amount = 0
       } else {
         this.detailParam.id = row.id
-        this.detailParam.name = row.name
-        this.detailParam.parentId = row.parentId
+        this.detailParam.chargeName = row.chargeName
         this.detailParam.description = row.description
-        this.detailParam.sortIndex = row.sortIndex
-        this.detailParam.createTime = row.createTime
-        this.detailParam.updateTime = row.updateTime
+        this.detailParam.chargeCurr = row.chargeCurr
+        this.detailParam.chargePrice = row.chargePrice
+        this.detailParam.chargePriceYuan = this.detailParam.chargePrice / 100
+        this.detailParam.amount = row.amount
       }
       this.detailDialogVisible = true
     },

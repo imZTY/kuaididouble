@@ -10,6 +10,15 @@ export function pageList(params) {
     })
 }
 
+// 获取产品树
+export function getTree(params) {
+  return request({
+      url: '/kdd/product/getTree',
+      method: 'get',
+      params
+  })
+}
+
 // 修改
 export function update(data) {
     data = qs.stringify(data)

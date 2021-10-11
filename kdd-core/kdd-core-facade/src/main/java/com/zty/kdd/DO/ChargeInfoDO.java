@@ -7,6 +7,8 @@ import com.zty.framework.dto.DataDTO;
 public class ChargeInfoDO extends DataDTO {
     private Integer id;
 
+    private String chargeName;
+
     private Integer chargeType;
 
     private Integer rights;
@@ -41,6 +43,14 @@ public class ChargeInfoDO extends DataDTO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getChargeName() {
+        return chargeName;
+    }
+
+    public void setChargeName(String chargeName) {
+        this.chargeName = chargeName;
     }
 
     public Integer getChargeType() {

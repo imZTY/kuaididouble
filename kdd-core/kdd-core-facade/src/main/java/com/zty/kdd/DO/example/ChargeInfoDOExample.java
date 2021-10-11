@@ -165,6 +165,76 @@ public class ChargeInfoDOExample {
             return (Criteria) this;
         }
 
+        public Criteria andChargeNameIsNull() {
+            addCriterion("charge_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameIsNotNull() {
+            addCriterion("charge_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameEqualTo(String value) {
+            addCriterion("charge_name =", value, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameNotEqualTo(String value) {
+            addCriterion("charge_name <>", value, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameGreaterThan(String value) {
+            addCriterion("charge_name >", value, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameGreaterThanOrEqualTo(String value) {
+            addCriterion("charge_name >=", value, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameLessThan(String value) {
+            addCriterion("charge_name <", value, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameLessThanOrEqualTo(String value) {
+            addCriterion("charge_name <=", value, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameLike(String value) {
+            addCriterion("charge_name like", value, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameNotLike(String value) {
+            addCriterion("charge_name not like", value, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameIn(List<String> values) {
+            addCriterion("charge_name in", values, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameNotIn(List<String> values) {
+            addCriterion("charge_name not in", values, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameBetween(String value1, String value2) {
+            addCriterion("charge_name between", value1, value2, "chargeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andChargeNameNotBetween(String value1, String value2) {
+            addCriterion("charge_name not between", value1, value2, "chargeName");
+            return (Criteria) this;
+        }
+
         public Criteria andChargeTypeIsNull() {
             addCriterion("charge_type is null");
             return (Criteria) this;

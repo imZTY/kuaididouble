@@ -4,7 +4,7 @@
     <el-dialog
       title="显示详情"
       :visible.sync="detailDialogVisible"
-      width="60%"
+      width="45%"
       :before-close="cancel"
     >
       <div style="display: flex; align-items: center; margin: 16px">
@@ -35,6 +35,15 @@
          :style="{width: '100%'}"></el-input>
       </div>
 
+      <div style="display: flex; align-items: center; margin: 16px">
+        <el-transfer
+          :titles="['未绑定收费规则', '已绑定收费规则']"
+          @change="handleChange"
+          v-model="linkedCharge"
+          :data="chargeData">
+        </el-transfer>
+      </div>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
         <el-button
@@ -61,7 +70,9 @@
 </template>
 <script>
 import { add, update } from "@/api/product"
+import { getAll, pageList, link, unlink } from "@/api/charge"
 import { Message } from 'element-ui'
+
 export default {
   name: 'DetailDialog',
   inheritAttrs: false,
@@ -76,6 +87,7 @@ export default {
       default: function() {
         return {
           type: 0,  // type: 0=未知，1=新增，2=修改，3=详情
+          id: 0,
           name: "",  //产品名称
           parentId: 0,  //父产品
           description: "",  //描述
@@ -85,7 +97,65 @@ export default {
     }
   },
   data() {
+    const generateData = _ => {
+      const data = []
+      var chargeInfoList = []
+      // 获取所有规则
+      pageList({
+        page: 1,
+        rows: 50
+      }).then(
+        function(res) {
+          // success
+          // console.log(res.data.data)
+          chargeInfoList = res.data.data
+          // 组装data
+          chargeInfoList.forEach((chargeInfo, index) => {
+            data.push({
+              label: chargeInfo.chargeName,
+              key: chargeInfo.id
+            });
+          });
+        },
+        function(e) {
+          // failure
+          console.error(e)
+        }
+      )
+      return data;
+    };
+    const generateLinked = _ => {
+      const data = []
+      if (this.detailParam.id == null || this.detailParam.id == 0) {
+        return []
+      }
+      var linkedCharge = []
+      // 获取所有规则
+      getAll({
+        productId: this.detailParam.id
+      }).then(
+        function(res) {
+          // success
+          // console.log(res.data.data)
+          linkedCharge = res.data.data
+          // 组装data
+          linkedCharge.forEach((chargeInfo, index) => {
+            data.push({
+              label: chargeInfo.chargeName,
+              key: chargeInfo.id
+            });
+          });
+        },
+        function(e) {
+          // failure
+          console.error(e)
+        }
+      )
+      return data;
+    };
     return {
+      chargeData: generateData(),
+      linkedCharge: [],  //将key放进来即可
       parentOptions: [{
         "label": "根",
         "value": 0
@@ -106,10 +176,34 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    getLinked() {
+      var data = []
+      var linkedCharge = []
+      // 获取所有规则
+      getAll({
+        productId: this.detailParam.id
+      }).then(
+        function(res) {
+          // success
+          // console.log(res.data.data)
+          linkedCharge = res.data.data
+          // 组装data
+          linkedCharge.forEach((chargeInfo, index) => {
+            data.push(chargeInfo.id);
+          });
+        },
+        function(e) {
+          // failure
+          console.error(e)
+        }
+      )
+      this.linkedCharge = data
+    },
     cancel() {
       this.$emit('cancel')
     },
     confirmAdd() {
+      var that = this
       //编辑接口
       var data = this.detailParam;
       add({
@@ -125,7 +219,7 @@ export default {
             type: 'success',
             duration: 1000
           })
-          this.cancel()
+          that.cancel()
         },
         function(e) {
           // failure
@@ -139,6 +233,7 @@ export default {
       )
     },
     confirmUpdate() {
+      var that = this
       //编辑接口
       var data = this.detailParam;
       update({
@@ -155,7 +250,7 @@ export default {
             type: 'success',
             duration: 1000
           })
-          this.cancel()
+          that.cancel()
         },
         function(e) {
           // failure
@@ -167,6 +262,59 @@ export default {
           })
         }
       )
+    },
+    handleChange(value, direction, movedKeys) {
+      if (direction == 'right') {
+        console.log("link " + movedKeys[0])
+        link({
+          chargeId: movedKeys[0],
+          productId: this.detailParam.id
+        }).then(
+          function(res) {
+            // success
+            Message({
+              message: '绑定收费规则成功',
+              type: 'success',
+              duration: 1000
+            })
+          },
+          function(e) {
+            // failure
+            console.error(e);
+            Message({
+              message: '处理异常',
+              type: 'error',
+              duration: 1000
+            })
+          }
+        )
+      } else if (direction == 'left'){
+        console.log("unlink " + movedKeys[0])
+        unlink({
+          chargeId: movedKeys[0],
+          productId: this.detailParam.id
+        }).then(
+          function(res) {
+            // success
+            Message({
+              message: '解绑收费规则成功',
+              type: 'success',
+              duration: 1000
+            })
+          },
+          function(e) {
+            // failure
+            console.error(e);
+            Message({
+              message: '处理异常',
+              type: 'error',
+              duration: 1000
+            })
+          }
+        )
+      } else {
+        console.error("unknow direction " + direction)
+      }
     }
   }
 }

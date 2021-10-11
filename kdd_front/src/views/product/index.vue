@@ -62,6 +62,7 @@
 
     <!-- 详情弹窗 -->
     <detail-dialog
+      ref="child"
       :detail-dialog-visible='detailDialogVisible'
       :detail-param='detailParam'
       @cancel='cancel'
@@ -189,6 +190,7 @@ export default {
         this.detailParam.sortIndex = row.sortIndex
         this.detailParam.createTime = row.createTime
         this.detailParam.updateTime = row.updateTime
+        this.$refs.child.getLinked();
       }
       this.detailDialogVisible = true
     },

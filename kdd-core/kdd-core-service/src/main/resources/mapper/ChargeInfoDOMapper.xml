@@ -3,6 +3,7 @@
 <mapper namespace="com.zty.kdd.dao.ChargeInfoDOMapper" >
   <resultMap id="BaseResultMap" type="com.zty.kdd.DO.ChargeInfoDO" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="charge_name" property="chargeName" jdbcType="VARCHAR" />
     <result column="charge_type" property="chargeType" jdbcType="INTEGER" />
     <result column="rights" property="rights" jdbcType="INTEGER" />
     <result column="charge_curr" property="chargeCurr" jdbcType="VARCHAR" />
@@ -77,8 +78,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, charge_type, rights, charge_curr, charge_price, amount, description, disabled, 
-    create_by, create_time, update_time, fld_n1, fld_n2, fld_l1, fld_s1
+    id, charge_name, charge_type, rights, charge_curr, charge_price, amount, description, 
+    disabled, create_by, create_time, update_time, fld_n1, fld_n2, fld_l1, fld_s1
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zty.kdd.DO.example.ChargeInfoDOExample" >
     select
@@ -96,7 +97,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from charge_info
     where id = #{id,jdbcType=INTEGER}
@@ -112,22 +113,27 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zty.kdd.DO.ChargeInfoDO" >
-    insert into charge_info (id, charge_type, rights, 
-      charge_curr, charge_price, amount, 
-      description, disabled, create_by, 
-      create_time, update_time, fld_n1, 
-      fld_n2, fld_l1, fld_s1)
-    values (#{id,jdbcType=INTEGER}, #{chargeType,jdbcType=INTEGER}, #{rights,jdbcType=INTEGER}, 
-      #{chargeCurr,jdbcType=VARCHAR}, #{chargePrice,jdbcType=BIGINT}, #{amount,jdbcType=BIGINT}, 
-      #{description,jdbcType=VARCHAR}, #{disabled,jdbcType=TINYINT}, #{createBy,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{fldN1,jdbcType=INTEGER}, 
-      #{fldN2,jdbcType=INTEGER}, #{fldL1,jdbcType=BIGINT}, #{fldS1,jdbcType=VARCHAR})
+    insert into charge_info (id, charge_name, charge_type,
+                             rights, charge_curr, charge_price,
+                             amount, description, disabled,
+                             create_by, create_time, update_time,
+                             fld_n1, fld_n2, fld_l1,
+                             fld_s1)
+    values (#{id,jdbcType=INTEGER}, #{chargeName,jdbcType=VARCHAR}, #{chargeType,jdbcType=INTEGER},
+            #{rights,jdbcType=INTEGER}, #{chargeCurr,jdbcType=VARCHAR}, #{chargePrice,jdbcType=BIGINT},
+            #{amount,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR}, #{disabled,jdbcType=TINYINT},
+            #{createBy,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+            #{fldN1,jdbcType=INTEGER}, #{fldN2,jdbcType=INTEGER}, #{fldL1,jdbcType=BIGINT},
+            #{fldS1,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zty.kdd.DO.ChargeInfoDO" >
     insert into charge_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
+      </if>
+      <if test="chargeName != null" >
+        charge_name,
       </if>
       <if test="chargeType != null" >
         charge_type,
@@ -175,6 +181,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
+      </if>
+      <if test="chargeName != null" >
+        #{chargeName,jdbcType=VARCHAR},
       </if>
       <if test="chargeType != null" >
         #{chargeType,jdbcType=INTEGER},
@@ -232,6 +241,9 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
+      <if test="record.chargeName != null" >
+        charge_name = #{record.chargeName,jdbcType=VARCHAR},
+      </if>
       <if test="record.chargeType != null" >
         charge_type = #{record.chargeType,jdbcType=INTEGER},
       </if>
@@ -282,20 +294,21 @@
   <update id="updateByExample" parameterType="map" >
     update charge_info
     set id = #{record.id,jdbcType=INTEGER},
-      charge_type = #{record.chargeType,jdbcType=INTEGER},
-      rights = #{record.rights,jdbcType=INTEGER},
-      charge_curr = #{record.chargeCurr,jdbcType=VARCHAR},
-      charge_price = #{record.chargePrice,jdbcType=BIGINT},
-      amount = #{record.amount,jdbcType=BIGINT},
-      description = #{record.description,jdbcType=VARCHAR},
-      disabled = #{record.disabled,jdbcType=TINYINT},
-      create_by = #{record.createBy,jdbcType=INTEGER},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      fld_n1 = #{record.fldN1,jdbcType=INTEGER},
-      fld_n2 = #{record.fldN2,jdbcType=INTEGER},
-      fld_l1 = #{record.fldL1,jdbcType=BIGINT},
-      fld_s1 = #{record.fldS1,jdbcType=VARCHAR}
+    charge_name = #{record.chargeName,jdbcType=VARCHAR},
+    charge_type = #{record.chargeType,jdbcType=INTEGER},
+    rights = #{record.rights,jdbcType=INTEGER},
+    charge_curr = #{record.chargeCurr,jdbcType=VARCHAR},
+    charge_price = #{record.chargePrice,jdbcType=BIGINT},
+    amount = #{record.amount,jdbcType=BIGINT},
+    description = #{record.description,jdbcType=VARCHAR},
+    disabled = #{record.disabled,jdbcType=TINYINT},
+    create_by = #{record.createBy,jdbcType=INTEGER},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+    fld_n1 = #{record.fldN1,jdbcType=INTEGER},
+    fld_n2 = #{record.fldN2,jdbcType=INTEGER},
+    fld_l1 = #{record.fldL1,jdbcType=BIGINT},
+    fld_s1 = #{record.fldS1,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -303,6 +316,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.zty.kdd.DO.ChargeInfoDO" >
     update charge_info
     <set >
+      <if test="chargeName != null" >
+        charge_name = #{chargeName,jdbcType=VARCHAR},
+      </if>
       <if test="chargeType != null" >
         charge_type = #{chargeType,jdbcType=INTEGER},
       </if>
@@ -350,20 +366,21 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zty.kdd.DO.ChargeInfoDO" >
     update charge_info
-    set charge_type = #{chargeType,jdbcType=INTEGER},
-      rights = #{rights,jdbcType=INTEGER},
-      charge_curr = #{chargeCurr,jdbcType=VARCHAR},
-      charge_price = #{chargePrice,jdbcType=BIGINT},
-      amount = #{amount,jdbcType=BIGINT},
-      description = #{description,jdbcType=VARCHAR},
-      disabled = #{disabled,jdbcType=TINYINT},
-      create_by = #{createBy,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      fld_n1 = #{fldN1,jdbcType=INTEGER},
-      fld_n2 = #{fldN2,jdbcType=INTEGER},
-      fld_l1 = #{fldL1,jdbcType=BIGINT},
-      fld_s1 = #{fldS1,jdbcType=VARCHAR}
+    set charge_name = #{chargeName,jdbcType=VARCHAR},
+        charge_type = #{chargeType,jdbcType=INTEGER},
+        rights = #{rights,jdbcType=INTEGER},
+        charge_curr = #{chargeCurr,jdbcType=VARCHAR},
+        charge_price = #{chargePrice,jdbcType=BIGINT},
+        amount = #{amount,jdbcType=BIGINT},
+        description = #{description,jdbcType=VARCHAR},
+        disabled = #{disabled,jdbcType=TINYINT},
+        create_by = #{createBy,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        fld_n1 = #{fldN1,jdbcType=INTEGER},
+        fld_n2 = #{fldN2,jdbcType=INTEGER},
+        fld_l1 = #{fldL1,jdbcType=BIGINT},
+        fld_s1 = #{fldS1,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
