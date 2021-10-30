@@ -1,6 +1,6 @@
 <template>
-  <div style="display: flex"> 
-    <div class='container'>
+  <el-row style="display: flex;"> 
+    <el-col class="container" :span="18">
       <el-card style="margin-bottom: 16px;">
         <div slot="header" class="clearfix">
           <span>用户信息</span>
@@ -43,52 +43,56 @@
         </el-row>
         <el-row>
         </el-row>
-
       </el-card>
+
+      <!-- 服务收费模块 -->
       <el-card style="margin-bottom: 16px;">
         <div id="app">
           <h3>产品服务订阅</h3>
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane :label="v.name" :name="v.id" :key="v.id"  v-for="v in root">
+          <el-tabs v-model="activeRootName" @tab-click="changeRoot">
+            <el-tab-pane :label="v.name" :name="v.name" :key="v.id" v-for="(v, index) in root">
               <el-row>
-                产品类型:
-                <template v-for="cat in cats">
-                  <el-button type="primary" :key="cat.id" v-if="activeCat == cat.id">{{ cat.name }}</el-button>
-                  <el-button :key="cat.id"  v-if="activeCat != cat.id">{{ cat.name }}</el-button>
+                <el-col :span="3">产品类型:</el-col>
+                <template v-for="cat in children[index]">
+                  <el-button :key="cat.id" v-if="activeChild == cat.id" @click="changeProduct(cat)" type="primary" >{{ cat.name }}</el-button>
+                  <el-button :key="cat.id"  v-if="activeChild != cat.id" @click="changeProduct(cat)">{{ cat.name }}</el-button>
                 </template>
               </el-row>
-              <div class="rule-box">
-                <div>套餐说明:</div>
-                <div class="rule">
+            </el-tab-pane>
+          
+              <el-row>
+                <el-col :span="3">套餐说明:</el-col>
+                <div :span="15" class="rule">
                   <div
                     class="rule-detail"
                     :class="{active: rule.id == activeRuleId}"
-                    v-for="rule in rules"
+                    v-for="(rule, index) in rules"
                     :key="rule.id"
-                    @click="changeRule(rule)"
+                    @click="changeRule(rule, index)"
                   >
                     <el-row
-                      >{{rule.value}}&nbsp;&nbsp;<el-button
+                      >{{parseCurr(rule.curr) + rule.price / 100}}&nbsp;&nbsp;
+                      <el-button
                         type="danger"
                         plain
                         size="mini"
                         >{{rule.label}}</el-button
                       ></el-row
                     >
-                    <el-row>{{rule.account}}&nbsp;&nbsp;{{rule.limit}}</el-row>
+                    <el-row>{{rule.amount}}条&nbsp;&nbsp;{{rule.description}}</el-row>
                   </div>
                 </div>
-              </div>
+              </el-row>
+
               <div>
                 当前选择:
-                {{activeRule.account}}&nbsp;&nbsp;{{activeRule.limit}}&nbsp;&nbsp;{{activeRule.validityPeriod}}
+                {{rules[activeRuleIndex].amount}}条&nbsp;&nbsp;{{rules[activeRuleIndex].description}}
               </div>
-              <div class="fee">应付金额: {{activeRule.value}}</div>
+              <div class="fee">应付金额: {{parseCurr(rules[activeRuleIndex].curr) + rules[activeRuleIndex].price / 100}}</div>
               <el-button type="primary">确定订购</el-button>
               <div>
-                确认并同意 <el-link type="primary" href="javascript:void(0)">《快递鸟服务电子协议》</el-link>
+                确认并同意 <el-link type="primary" href="javascript:void(0)">《kddouble服务电子协议》</el-link>
               </div>
-            </el-tab-pane>
           </el-tabs>
         </div>
       </el-card>
@@ -276,8 +280,9 @@
         </span>
       </el-dialog>
 
-    </div>
-    <div class="container" style="padding: 16px 0px; margin-bottom: 16px;">
+    </el-col>
+
+    <el-col class="container" style="padding: 16px 0px; margin-bottom: 16px;" :span="5">
       <el-card>
         <div slot="header" class="clearfix">
           <span>技术支持</span>
@@ -295,12 +300,15 @@
           </el-descriptions-item>
         </el-descriptions>
       </el-card>
-    </div>
-  </div>
+    </el-col>
+
+  </el-row>
 </template>
 
 <script>
 import { getDetail, uploadFile, getSecrect } from "@/api/certificate";
+import { getTree } from "@/api/product";
+import { getAll } from "@/api/charge";
 import { getBalance } from "@/api/balance";
 import { reqEditUser } from "@/api/user";
 import { Message } from 'element-ui'
@@ -339,56 +347,60 @@ export default {
       customerCode: "",
       secretKey: "",
       root: [
-        { name: "限时抢购", id: "a" },
-        { name: "物流查询", id: "b" },
-        { name: "电子面单", id: "c" },
-        { name: "物流短信", id: "d" },
+        { name: "限时抢购", id: 1 },
+        { name: "物流查询", id: 2 },
+        { name: "电子面单", id: 3 },
+        { name: "物流短信", id: 4 },
       ],
-      activeName: "b",
-      cats: [
-        { name: "在线监控", id: "a" },
-        { name: "快递查询", id: "b" },
-        { name: "物流查询", id: "c" },
-        { name: "在途监控", id: "d" },
+      activeRoot: 2,
+      activeRootName: "物流查询",
+      activeRootIndex: 0,
+      children: [
+        [
+          { name: "在线监控", id: 5 },
+          { name: "快递查询", id: 6 },
+          { name: "物流查询", id: 7 },
+          { name: "在途监控", id: 8 },
+        ]
       ],
-      activeCat: "b",
+      activeChild: 4,
       rules: [
         {
-          id: "a",
-          value: "￥ 2800",
+          id: 1,
+          price: 280000,
+          curr: "CNY",
           label: "按次计费",
-          account: "8000次",
-          limit: "约200次/天",
-          validityPeriod: "有效期一年",
+          amount: 8000,
+          description: "约200次/天",
           active: true,
         },
         {
-          id: "b",
-          value: "￥ 2800",
+          id: 2,
+          price: 280000,
+          curr: "CNY",
           label: "按次计费",
-          account: "8000次",
-          limit: "约200次/天",
-          validityPeriod: "有效期一年",
+          amount: 8000,
+          description: "约200次/天",
         },
         {
-          id: "c",
-          value: "￥ 2800",
+          id: 3,
+          price: 280000,
+          curr: "CNY",
           label: "按次计费",
-          account: "8000次",
-          limit: "约200次/天",
-          validityPeriod: "有效期一年",
+          amount: 8000,
+          description: "约200次/天",
         },
         {
-          id: "d",
-          value: "￥ 2800",
+          id: 4,
+          price: 280000,
+          curr: "CNY",
           label: "按次计费",
-          account: "8000次",
-          limit: "约200次/天",
-          validityPeriod: "有效期一年",
+          amount: 8000,
+          description: "约200次/天",
         },
       ],
-      activeRuleId: "a",
-      activeRule: {},
+      activeRuleId: 1,
+      activeRuleIndex: 0,
     }
   },
   computed: {
@@ -409,8 +421,85 @@ export default {
   mounted() {
     this.getMine()
     this.getMyBalance()
+    this.loadProductTree()
+    this.loadCharge()
   },
   methods: {
+    parseCurr (currCode) {
+      if (currCode == 'CNY') {
+        return '￥'
+      } else if (currCode == 'USD') {
+        return '$'
+      } else {
+        return '￥'
+      }
+    },
+    loadCharge() {
+      // 加载产品所有收费规则
+      var that = this;
+      getAll({
+        productId: this.activeChild
+      }).then(
+        function(res) {
+          // success
+          // console.log('getTree ',res.data.data)
+          var chargeList = res.data.data
+          that.rules = []
+          for (let i = 0; i < chargeList.length; i++) {
+            const charge = chargeList[i];
+            that.rules[i] = {
+              id: charge.id,
+              price: charge.chargePrice,
+              curr: charge.chargeCurr,
+              label: charge.chargeName,
+              amount: charge.amount,
+              description: charge.description
+            }
+          }
+          that.activeRuleId = that.rules[0].id
+        },
+        function(e) {
+          // failure
+          console.error(e);
+          Message({
+            message: '加载收费规则异常',
+            type: 'error',
+            duration: 1000
+          })
+        }
+      );
+    },
+    loadProductTree() {
+      // 加载产品树
+      var that = this;
+      getTree().then(
+        function(res) {
+          // success
+          // console.log('getTree ',res.data.data)
+          var treeList = res.data.data
+          that.root = []
+          that.children = []
+          for (let i = 0; i < treeList.length; i++) {
+            const treeBranch = treeList[i];
+            that.root[i] = treeBranch.root
+            that.children[i] = treeBranch.children
+          }
+          that.activeRootIndex = 0
+          that.activeRoot = that.root[that.activeRootIndex].id
+          that.activeRootName = that.root[that.activeRootIndex].name
+          that.activeChild = that.children[that.activeRootIndex][0].id
+        },
+        function(e) {
+          // failure
+          console.error(e);
+          Message({
+            message: '初始化产品树异常',
+            type: 'error',
+            duration: 1000
+          })
+        }
+      );
+    },
     uploadIdcardFront(file) {
       this.reqUploadFile(file, 1)
     },
@@ -668,15 +757,25 @@ export default {
     showEditDialogClose() {
       this.showEditDialogVisible = false
     },
-    handleClick(tab, event) {
-      console.log(tab, event);
+    changeRoot(tab) {
+      // console.log(tab)
+      this.activeRootIndex = tab.index
+      this.activeRoot = this.root[this.activeRootIndex].id
+      this.activeChild = this.children[this.activeRootIndex][0].id
+      // 更新收费规则
+      this.loadCharge()
     },
-    changeRule(rule) {
-      this.activeRuleId = rule.id;
+    changeProduct(product) {
+      this.activeChild = product.id
+      // 更新收费规则
+      this.loadCharge()
+    },
+    changeRule(rule, index) {
+      this.activeRuleId = rule.id
+      this.activeRuleIndex = index
     },
   },
   created() {
-    this.activeRule = this.rules[0];
   },
 }
 </script>
@@ -710,7 +809,7 @@ $light_gray: #eee;
   margin-right: 5px;
 }
 .rule-detail.active {
-  background-color: skyblue;
+  background-color: rgb(198,226,255);
 }
 .fee {
   color: red;
