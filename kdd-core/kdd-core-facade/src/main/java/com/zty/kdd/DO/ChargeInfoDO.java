@@ -13,12 +13,24 @@ public class ChargeInfoDO extends DataDTO {
 
     private Integer rights;
 
+    /**
+     * 收费币种
+     */
     private String chargeCurr;
 
+    /**
+     * 收费价格(单位:分)
+     */
     private Long chargePrice;
 
+    /**
+     * 售卖条数
+     */
     private Long amount;
 
+    /**
+     * 规则描述
+     */
     private String description;
 
     private Byte disabled;

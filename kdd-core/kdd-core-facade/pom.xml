@@ -24,13 +24,13 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>pay-facade</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.zty.kuaididouble</groupId>
             <artifactId>kdd-third-facade</artifactId>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

@@ -25,7 +25,7 @@
     <version>${kuaididouble.version}</version>
 
     <properties>
-        <zty-wheels.version>0.8.1</zty-wheels.version>
+        <zty-wheels.version>1.0.0</zty-wheels.version>
         <kuaididouble.version>1.0-SNAPSHOT</kuaididouble.version>
         <pagehelper.version>4.2.1</pagehelper.version>
         <fastjson.version>1.2.70</fastjson.version>
@@ -118,6 +118,18 @@
             <dependency>
                 <groupId>com.zty</groupId>
                 <artifactId>file-web</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>pay-facade</artifactId>
+                <version>${zty-wheels.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.zty</groupId>
+                <artifactId>pay-service</artifactId>
                 <version>${zty-wheels.version}</version>
                 <scope>compile</scope>
             </dependency>

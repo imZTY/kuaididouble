@@ -19,6 +19,10 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.zty</groupId>
+            <artifactId>pay-service</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.zty.kuaididouble</groupId>
             <artifactId>kdd-core-facade</artifactId>
             <scope>compile</scope>

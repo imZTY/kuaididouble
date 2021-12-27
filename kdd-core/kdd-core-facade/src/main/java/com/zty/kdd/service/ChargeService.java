@@ -56,4 +56,6 @@ public interface ChargeService {
      * @return 成功条数
      */
     public int unlinkProduct(ProductChargeRelationDO relationDO);
+
+    public ChargeInfoDO findById(Integer id);
 }

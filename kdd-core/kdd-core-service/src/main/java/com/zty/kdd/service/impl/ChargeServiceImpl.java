@@ -212,4 +212,9 @@ public class ChargeServiceImpl implements ChargeService {
             return chargeRelationDOMapper.updateByPrimaryKeySelective(existedRelation);
         }
     }
+
+    @Override
+    public ChargeInfoDO findById(Integer id) {
+        return chargeInfoDOMapper.selectByPrimaryKey(id);
+    }
 }

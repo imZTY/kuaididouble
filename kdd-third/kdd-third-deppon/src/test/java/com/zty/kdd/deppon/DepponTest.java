@@ -55,4 +55,9 @@ public class DepponTest {
         response = HttpUtils.sendRequest(URL, data, "UTF-8", 5000);
         log.info(JSON.toJSONString(response));
     }
+
+    @Test
+    public void foo() {
+        System.out.println(System.nanoTime());
+    }
 }
