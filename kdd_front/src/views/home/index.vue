@@ -89,7 +89,7 @@
                 {{rules[activeRuleIndex].amount}}条&nbsp;&nbsp;{{rules[activeRuleIndex].description}}
               </div>
               <div class="fee">应付金额: {{parseCurr(rules[activeRuleIndex].curr) + rules[activeRuleIndex].price / 100}}</div>
-              <el-button type="primary">确定订购</el-button>
+              <el-button type="primary" @click="createOrder()">确定订购</el-button>
               <div>
                 确认并同意 <el-link type="primary" href="javascript:void(0)">《kddouble服务电子协议》</el-link>
               </div>
@@ -306,11 +306,12 @@
 </template>
 
 <script>
-import { getDetail, uploadFile, getSecrect } from "@/api/certificate";
-import { getTree } from "@/api/product";
-import { getAll } from "@/api/charge";
-import { getBalance } from "@/api/balance";
-import { reqEditUser } from "@/api/user";
+import { getDetail, uploadFile, getSecrect } from "@/api/certificate"
+import { getTree } from "@/api/product"
+import { getAll } from "@/api/charge"
+import { getBalance } from "@/api/balance"
+import { reqEditUser } from "@/api/user"
+import { pcPay } from "@/api/order"
 import { Message } from 'element-ui'
 import store from '@/store'
 import axios from 'axios'
@@ -425,6 +426,28 @@ export default {
     this.loadCharge()
   },
   methods: {
+    createOrder() {
+      pcPay({
+        id: this.activeRuleId,
+        orderMethod: 1,
+        returnUrl: window.location.href
+      }).then(
+        function(res) {
+          // success
+          console.log('success ',res)
+          // console.log('success')
+        },
+        function(e) {
+          // failure
+          console.error(e);
+          Message({
+            message: '发起支付异常',
+            type: 'error',
+            duration: 1000
+          })
+        }
+      )
+    },
     parseCurr (currCode) {
       if (currCode == 'CNY') {
         return '￥'

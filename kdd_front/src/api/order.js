@@ -1,7 +1,36 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-// 充值
+/**
+ * 在新窗口发送post请求
+ * @param {String} URL ${contextPath}/analyse/detail.do
+ * @param {Map} PARAMS {carNum :carNum,ids:refIds}
+ */
+function postInNewTab(URL, PARAMS) { 
+    var temp_form = document.createElement("form")    
+    temp_form.action = URL     
+    temp_form.target = "_blank"
+    temp_form.method = "post"     
+    temp_form.style.display = "none"
+    for (var x in PARAMS) { 
+        var opt = document.createElement("textarea")     
+        opt.name = x
+        opt.value = PARAMS[x]     
+        temp_form.appendChild(opt)     
+    }     
+    document.body.appendChild(temp_form)     
+    temp_form.submit()
+    // 删除使用完成的表单
+    var formParent = temp_form.parentNode//获取input的父对象
+    formParent.removeChild(temp_form)
+}
+
+// 创建支付订单 - 电脑web支付
+export function pcPay(data) {
+    return postInNewTab('/kdd/order/pcPay', data)
+}
+
+// 超管账号充值
 export function charge(data) {
     data = qs.stringify(data)
     return request({

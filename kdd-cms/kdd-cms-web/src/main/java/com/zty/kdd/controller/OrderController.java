@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zty.common.service.AccountService;
@@ -63,7 +64,7 @@ public class OrderController {
      */
     @CheckToken
     @PostMapping("/pcPay")
-    public ResultDTO pcPay(OrderInfoDO pcPayRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResultDTO pcPay(OrderInfoDO pcPayRequest, @RequestParam(name = "returnUrl",defaultValue = "returnUrl")String returnUrl, HttpServletResponse response) {
         log.info("网站充值，入参(注意!这里的id是收费规则id):{}", JSONObject.toJSONString(pcPayRequest));
         int currentUID = pcPayRequest.getCurrentUID();
         if (currentUID == 0) {
@@ -76,7 +77,7 @@ public class OrderController {
             return ResultDTO.error(403, "收费套餐"+chargeId+"不存在");
         }
         if (pcPayRequest.getOrderMethod() == null) {
-            log.warn("未传入充值方式{}", pcPayRequest.getOrderMethod());if
+            log.warn("未传入充值方式{}", pcPayRequest.getOrderMethod());
             return ResultDTO.error(403, "未传入充值方式");
         }
         if (OrderMethod.ALI_PAY != pcPayRequest.getOrderMethod()) {
@@ -92,7 +93,7 @@ public class OrderController {
                 String.valueOf(orderId),
                 "kdd网站支付",
                 "余额套餐充值",
-                request.getContextPath());
+                returnUrl);
         try {
             response.sendRedirect(payCenterUrl);
             return ResultDTO.success();
