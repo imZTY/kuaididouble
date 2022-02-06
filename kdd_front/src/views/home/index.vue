@@ -293,10 +293,14 @@
         </el-descriptions>
         <el-descriptions title="文档资料" :column="1" :span="3">
           <el-descriptions-item label="对接指引" :span="3">
-            <el-link type="primary" href="javascript:void(0)">《对接流程指引》</el-link>
+            <el-link type="primary" target="_blank" href="https://docs.apipost.cn/preview/44073a238a3097c1/871edc8b0b88a82c?target_id=72d6baa9-419a-42e1-b9b6-cd78f490c403#72d6baa9-419a-42e1-b9b6-cd78f490c403">
+            《对接流程指引》
+            </el-link>
           </el-descriptions-item>
           <el-descriptions-item label="接口文档" :span="3">
-            <el-link type="primary" href="javascript:void(0)">《API接口文档》</el-link>
+            <el-link type="primary" target="_blank" href="https://docs.apipost.cn/preview/44073a238a3097c1/871edc8b0b88a82c?target_id=72d6baa9-419a-42e1-b9b6-cd78f490c403#72d6baa9-419a-42e1-b9b6-cd78f490c403">
+            《API接口文档》
+            </el-link>
           </el-descriptions-item>
         </el-descriptions>
       </el-card>

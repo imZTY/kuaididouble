@@ -34,4 +34,5 @@ logging:
 # redirect的起始地址
 paycenter:
   alipay:
+    host: http://127.0.0.1:7171/paycenter
     webpay: /paycenter/alipay/pay/web

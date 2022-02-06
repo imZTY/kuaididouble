@@ -30,6 +30,17 @@ export function pcPay(data) {
     return postInNewTab('/kdd/order/pcPay', data)
 }
 
+
+// 订单查询 - 跟进订单状态
+export function queryPay(data) {
+    data = qs.stringify(data)
+    return request({
+        url: '/paycenter/order/query',
+        method: 'post',
+        data
+    })
+}
+
 // 超管账号充值
 export function charge(data) {
     data = qs.stringify(data)
