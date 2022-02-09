@@ -173,6 +173,7 @@
         </span>
       </el-dialog>
 
+      <!-- TODO 支付跟进对话框 -->
 
       <!-- 进件审核对话框 -->
       <el-dialog
@@ -326,6 +327,7 @@ export default {
   },
   data() {
     return {
+      currentPayLocalOrderId: 0,
       showMsgDialogVisible: false, //进件审核对话框
       showEditDialogVisible: false, //进件审核对话框
       roleId: 2,
@@ -439,13 +441,23 @@ export default {
         function(res) {
           // success
           console.log('success ',res)
-          // console.log('success')
+          var pcPayResponse = res.data.data
+          Message({
+            type: 'success',
+            message: '创建支付订单成功，正在跳转支付',
+            duration: 1000
+          })
+          // 记录当前订单号
+          this.currentPayLocalOrderId = pcPayResponse.localOrderId
+          // 在新标签页前往支付中心
+          window.open(pcPayResponse.payCenterUrl)
+          // TODO 打开支付结果跟进弹窗
         },
         function(e) {
           // failure
           console.error(e);
           Message({
-            message: '发起支付异常',
+            message: '创建支付订单异常',
             type: 'error',
             duration: 1000
           })
@@ -464,6 +476,7 @@ export default {
     loadCharge() {
       // 加载产品所有收费规则
       var that = this;
+      this.rules = [];
       getAll({
         productId: this.activeChild
       }).then(
@@ -542,7 +555,7 @@ export default {
       if (isLarge) {
         this.$message({
           type: 'error',
-          message: '文件大小超过20M！'
+          message: '文件大小超过20M!'
         })
         return false
       }

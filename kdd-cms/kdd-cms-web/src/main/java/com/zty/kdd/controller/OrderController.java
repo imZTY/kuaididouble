@@ -1,22 +1,19 @@
 package com.zty.kdd.controller;
 
-import java.io.IOException;
 import java.util.Date;
 
-import cn.hutool.core.math.Money;
-import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.zty.kdd.DO.ChargeInfoDO;
-import com.zty.kdd.config.PayCenterConfig;
+import com.zty.kdd.response.PcPayResponse;
 import com.zty.kdd.service.ChargeService;
 import com.zty.pay.DO.OrderInfoDO;
 import com.zty.pay.constant.OrderMethod;
 import com.zty.pay.constant.OrderStatus;
 import com.zty.pay.constant.OrderType;
+import com.zty.pay.helper.PayCenterHelper;
 import com.zty.pay.service.PayOrderService;
 import com.zty.pay.utils.MoneyUtil;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +53,7 @@ public class OrderController {
     private ChargeService chargeService;
 
     @Autowired
-    private PayCenterConfig payCenterConfig;
+    private PayCenterHelper payCenterHelper;
 
     /**
      * 网站支付
@@ -84,22 +81,22 @@ public class OrderController {
             log.warn("暂不支持当前充值方式{}", pcPayRequest.getOrderMethod());
             return ResultDTO.error(403, "仅支持支付宝网站支付");
         }
-        // 根据收费规则，创建订单基本信息
-        OrderInfoDO order = parseOrderInfoFromCharge(chargeInfoDO, currentUID, pcPayRequest);
-        long orderId = payOrderService.createNewOrder(order);
-        log.info("已生成本地订单号:{}", orderId);
-        // 跳转到对应的支付中心
-        String payCenterUrl = payCenterConfig.getAlipayWebpayUrl(MoneyUtil.fenToYuan(order.getActualAmount()),
-                String.valueOf(orderId),
-                "kdd网站支付",
-                "余额套餐充值",
-                returnUrl);
         try {
-            response.sendRedirect(payCenterUrl);
-            return ResultDTO.success();
+            // 根据收费规则，创建订单基本信息
+            OrderInfoDO order = parseOrderInfoFromCharge(chargeInfoDO, currentUID, pcPayRequest);
+            long orderId = payOrderService.createNewOrder(order);
+            log.info("已生成本地订单号:{}", orderId);
+            // 获取相应支付中心的地址
+            String payCenterUrl = payCenterHelper.getAlipayWebpayUrl(MoneyUtil.fenToYuan(order.getActualAmount()),
+                    String.valueOf(orderId),
+                    "kdd网站支付",
+                    "余额套餐充值",
+                    returnUrl);
+            log.info("即将返回支付中心地址: {}", payCenterUrl);
+            return ResultDTO.success(new PcPayResponse(orderId, payCenterUrl));
         } catch (Exception e) {
-            log.error("跳转至支付中心{}异常: ", payCenterUrl, e);
-            return ResultDTO.error(500, "跳转至支付中心异常:"+e.getMessage());
+            log.error("创建PC支付订单失败, 入参:{}", pcPayRequest, e);
+            return ResultDTO.error(500, "创建PC支付订单异常:"+e.getMessage());
         }
     }
 
@@ -116,6 +113,14 @@ public class OrderController {
         orderInfo.setCreateBy(accountId);
         orderInfo.setCreateTime(new Date());
         return orderInfo;
+    }
+
+    // 查询并跟进充值情况
+    @CheckToken
+    @PostMapping("/queryAndRefresh")
+    public ResultDTO queryAndRefresh(OrderInfoDO orderInfoDO) {
+        ResultDTO<OrderInfoDO> payCenterResponse = this.payCenterHelper.queryOrder(orderInfoDO);
+        return ResultDTO.success();
     }
 
     /**

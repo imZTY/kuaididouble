@@ -27,7 +27,12 @@ function postInNewTab(URL, PARAMS) {
 
 // 创建支付订单 - 电脑web支付
 export function pcPay(data) {
-    return postInNewTab('/kdd/order/pcPay', data)
+    data = qs.stringify(data)
+    return request({
+        url: '/kdd/order/pcPay',
+        method: 'post',
+        data
+    })
 }
 
 

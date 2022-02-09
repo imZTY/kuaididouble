@@ -109,7 +109,7 @@ export default {
       } else if (rowdata.parentId == 2) {
         return "电子面单"
       } else if (rowdata.parentId == 3) {
-        return "快递查询"
+        return "物流查询"
       } else {
         return "未知"
       }
