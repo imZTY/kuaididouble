@@ -10,23 +10,23 @@ public class PcPayResponse {
     /**
      * 本地订单号
      */
-    private Long localOrderId;
+    private String localOrderId;
 
     /**
      * 跳转至支付中心完成支付的地址，将用于 window.open(payCenterUrl);
      */
     private String payCenterUrl;
 
-    public PcPayResponse(Long localOrderId, String payCenterUrl) {
+    public PcPayResponse(String localOrderId, String payCenterUrl) {
         this.localOrderId = localOrderId;
         this.payCenterUrl = payCenterUrl;
     }
 
-    public Long getLocalOrderId() {
+    public String getLocalOrderId() {
         return localOrderId;
     }
 
-    public void setLocalOrderId(Long localOrderId) {
+    public void setLocalOrderId(String localOrderId) {
         this.localOrderId = localOrderId;
     }
 

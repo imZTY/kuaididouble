@@ -16,6 +16,6 @@ public interface KddOrderService {
      * @param pageDo
      * @return
      */
-    public boolean chargeWithTransaction(OrderInfoDO pageDo) throws Exception;
+    public boolean chargeWithTransaction(OrderInfoDO pageDo, boolean isNewOrder) throws Exception;
 
 }

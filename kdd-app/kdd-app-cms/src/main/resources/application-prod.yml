@@ -1,4 +1,4 @@
-# 开发环境配置文件
+# 生产环境配置文件
 
 spring:
   datasource:
@@ -34,5 +34,6 @@ logging:
 
 # redirect的起始地址
 paycenter:
+  baseUrl: ${PAYCENTER_BASEURL:http://127.0.0.1:7171/}
   alipay:
     webpay: /paycenter/alipay/pay/web

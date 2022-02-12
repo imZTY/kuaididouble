@@ -86,9 +86,9 @@
 
               <div>
                 当前选择:
-                {{rules[activeRuleIndex].amount}}条&nbsp;&nbsp;{{rules[activeRuleIndex].description}}
+                {{rules[activeRuleIndex] != null ? rules[activeRuleIndex].amount : ''}}条&nbsp;&nbsp;{{rules[activeRuleIndex] != null ? rules[activeRuleIndex].description : ''}}
               </div>
-              <div class="fee">应付金额: {{parseCurr(rules[activeRuleIndex].curr) + rules[activeRuleIndex].price / 100}}</div>
+              <div class="fee">应付金额: {{parseCurr(rules[activeRuleIndex] != null ? rules[activeRuleIndex].curr : '') + (rules[activeRuleIndex] != null ? rules[activeRuleIndex].price : 0) / 100}}</div>
               <el-button type="primary" @click="createOrder()">确定订购</el-button>
               <div>
                 确认并同意 <el-link type="primary" href="javascript:void(0)">《kddouble服务电子协议》</el-link>
@@ -174,6 +174,26 @@
       </el-dialog>
 
       <!-- TODO 支付跟进对话框 -->
+      <el-dialog
+        title="等待订单完成.."
+        :visible.sync="showOrderDialogVisible"
+        width="40%"
+        :show-close="false"
+        :close-on-click-modal="false"
+      >
+        <div style="display: flex;align-items: center;margin: 16px;">
+          <span style="width: 30%;text-align: center;">当前订单</span>
+          <span style="width: 70%;text-align: left;">{{currentPayLocalOrderId}}</span>
+        </div>
+        <div style="display: flex;align-items: center;margin: 16px;">
+          <span style="width: 30%;text-align: center;">订单状态</span>
+          <span style="width: 70%;text-align: left;">{{getOrderStatusStr}}</span>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="showOrderDialogVisible= false" :disabled="!isOrderOver(currentPayLocalOrderStatus)">关闭</el-button>
+          <el-button type="primary" @click="queryAndRefreshCurrentOrder" :loading="isQueryingOrder">刷新</el-button>
+        </span>
+      </el-dialog>
 
       <!-- 进件审核对话框 -->
       <el-dialog
@@ -316,7 +336,7 @@ import { getTree } from "@/api/product"
 import { getAll } from "@/api/charge"
 import { getBalance } from "@/api/balance"
 import { reqEditUser } from "@/api/user"
-import { pcPay } from "@/api/order"
+import { pcPay, queryAndRefresh } from "@/api/order"
 import { Message } from 'element-ui'
 import store from '@/store'
 import axios from 'axios'
@@ -327,7 +347,10 @@ export default {
   },
   data() {
     return {
+      showOrderDialogVisible: false, //进件审核对话框
+      isQueryingOrder: false,
       currentPayLocalOrderId: 0,
+      currentPayLocalOrderStatus: 0,
       showMsgDialogVisible: false, //进件审核对话框
       showEditDialogVisible: false, //进件审核对话框
       roleId: 2,
@@ -423,6 +446,29 @@ export default {
       } else {
         return '无法识别'
       }
+    },
+    getOrderStatusStr: function () {
+      if (this.currentPayLocalOrderStatus == 0) {
+        return '初始'
+      } else if (this.currentPayLocalOrderStatus == 1) {
+        return '处理中'
+      } else if (this.currentPayLocalOrderStatus == 2) {
+        return '支付完成'
+      } else if (this.currentPayLocalOrderStatus == 3) {
+        return '支付关闭'
+      } else if (this.currentPayLocalOrderStatus == 4) {
+        return '失败'
+      } else if (this.currentPayLocalOrderStatus == 5) {
+        return '退款中'
+      } else if (this.currentPayLocalOrderStatus == 6) {
+        return '已退款'
+      } else if (this.currentPayLocalOrderStatus == 7) {
+        return '已冲正'
+      } else if (this.currentPayLocalOrderStatus == 8) {
+        return '已终止'
+      } else {
+        return '无法识别'
+      }
     }
   },
   mounted() {
@@ -432,7 +478,11 @@ export default {
     this.loadCharge()
   },
   methods: {
+    isOrderOver(orderStatus) {
+      return orderStatus == 2 || orderStatus == 3 || orderStatus == 4 || orderStatus == 6 || orderStatus == 7;
+    },
     createOrder() {
+      var that = this
       pcPay({
         id: this.activeRuleId,
         orderMethod: 1,
@@ -440,18 +490,19 @@ export default {
       }).then(
         function(res) {
           // success
-          console.log('success ',res)
           var pcPayResponse = res.data.data
+          console.log('pcPayResponse ',pcPayResponse)
           Message({
             type: 'success',
             message: '创建支付订单成功，正在跳转支付',
             duration: 1000
           })
           // 记录当前订单号
-          this.currentPayLocalOrderId = pcPayResponse.localOrderId
+          that.currentPayLocalOrderId = pcPayResponse.localOrderId
           // 在新标签页前往支付中心
           window.open(pcPayResponse.payCenterUrl)
-          // TODO 打开支付结果跟进弹窗
+          // 打开支付结果跟进弹窗
+          that.showOrderDialogVisible = true
         },
         function(e) {
           // failure
@@ -675,6 +726,42 @@ export default {
           console.error(e)
           console.log('取消')
         })
+    },
+    queryAndRefreshCurrentOrder() {
+      var that = this
+      this.isQueryingOrder = true
+      queryAndRefresh({
+        id: this.currentPayLocalOrderId
+      }).then(
+        function(res) {
+          // success
+          var responseData = res.data.data
+          console.log('queryAndRefresh ',res.data.data)
+          that.isQueryingOrder = false
+          // 判断响应是否成功
+          if (responseData == null) {
+            return
+          }
+          // 更新订单状态
+          that.currentPayLocalOrderStatus = responseData.status
+          // 判断是否可以关闭此弹框
+          console.log('isOrderOver: ', that.isOrderOver(responseData.status))
+          if (that.isOrderOver(responseData.status)) {
+            // 更新余额
+            that.getMyBalance();
+          }
+        },
+        function(e) {
+          // failure
+          console.error('同步订单信息异常');
+          that.isQueryingOrder = false
+          Message({
+            message: '同步订单信息异常',
+            type: 'error',
+            duration: 1000
+          })
+        }
+      )
     },
     getMine() {
       var that = this;

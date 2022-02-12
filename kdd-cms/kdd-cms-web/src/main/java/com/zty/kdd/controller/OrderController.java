@@ -2,6 +2,7 @@ package com.zty.kdd.controller;
 
 import java.util.Date;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.zty.kdd.DO.ChargeInfoDO;
@@ -67,7 +68,7 @@ public class OrderController {
         if (currentUID == 0) {
             return ResultDTO.error(403, "用户未登陆");
         }
-        int chargeId = Math.toIntExact(pcPayRequest.getId());
+        int chargeId = Math.toIntExact(pcPayRequest.getIdValue());
         ChargeInfoDO chargeInfoDO = chargeService.findById(chargeId);
         if (chargeInfoDO == null) {
             log.warn("充值套餐{}不存在", chargeId);
@@ -84,11 +85,11 @@ public class OrderController {
         try {
             // 根据收费规则，创建订单基本信息
             OrderInfoDO order = parseOrderInfoFromCharge(chargeInfoDO, currentUID, pcPayRequest);
-            long orderId = payOrderService.createNewOrder(order);
+            String orderId = String.valueOf(payOrderService.createNewOrder(order));
             log.info("已生成本地订单号:{}", orderId);
             // 获取相应支付中心的地址
             String payCenterUrl = payCenterHelper.getAlipayWebpayUrl(MoneyUtil.fenToYuan(order.getActualAmount()),
-                    String.valueOf(orderId),
+                    orderId,
                     "kdd网站支付",
                     "余额套餐充值",
                     returnUrl);
@@ -120,7 +121,17 @@ public class OrderController {
     @PostMapping("/queryAndRefresh")
     public ResultDTO queryAndRefresh(OrderInfoDO orderInfoDO) {
         ResultDTO<OrderInfoDO> payCenterResponse = this.payCenterHelper.queryOrder(orderInfoDO);
-        return ResultDTO.success();
+        OrderInfoDO orderResp = payCenterResponse.getData();
+        if (orderResp != null && payCenterResponse.getResultCode() == 200 && orderResp.getFldN3() == 0) {
+            // 如果未充值，则执行充值，
+            try {
+                boolean isOk = this.kddOrderService.chargeWithTransaction(orderResp, false);
+                log.info("充值结果:{}, 订单号:{}", isOk, orderResp.getId());
+            } catch (Exception e) {
+                log.error("充值失败,订单信息:{}", JSON.toJSONString(orderResp));
+            }
+        }
+        return payCenterResponse;
     }
 
     /**
@@ -175,7 +186,7 @@ public class OrderController {
                 }
             } else if (OrderType.REFUND == orderInfoDO.getOrderType()) {
                 // 退款
-                if (orderInfoDO.getId() == null) {
+                if (orderInfoDO.getIdValue() == null) {
                     return ResultDTO.error(403, "未传入订单ID");
                 }
                 // 检查退款订单是否已存在
@@ -190,7 +201,7 @@ public class OrderController {
             // 调用事务充值方法（先创建订单，再改余额）
             orderInfoDO.setCreateBy(currentUID);
             orderInfoDO.setActualAmount(orderInfoDO.getOrderAmount());
-            boolean isOk = this.kddOrderService.chargeWithTransaction(orderInfoDO);
+            boolean isOk = this.kddOrderService.chargeWithTransaction(orderInfoDO, true);
             return isOk ? ResultDTO.success() : ResultDTO.error(500, "充值失败");
         }
     }

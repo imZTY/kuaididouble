@@ -3,6 +3,7 @@ package com.zty.kdd.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.zty.pay.DO.OrderInfoDO;
@@ -43,7 +44,7 @@ public class KddOrderServiceImpl implements KddOrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean chargeWithTransaction(OrderInfoDO orderInfoDO) throws Exception {
+    public boolean chargeWithTransaction(OrderInfoDO orderInfoDO, boolean isNewOrder) throws Exception {
         if (orderInfoDO.getOrderAmount() <= 0) {
             log.error("参数错误，订单金额必须大于0，{}", orderInfoDO.getActualAmount());
             return false;
@@ -56,9 +57,20 @@ public class KddOrderServiceImpl implements KddOrderService {
             log.error("参数错误，余额变化必须大于0，{}", orderInfoDO.getBalanceChange());
             return false;
         }
-        orderInfoDO.setStatus(OrderStatus.SUCCESS);
-        orderInfoDO.setCreateTime(new Date());
-        orderInfoDOMapper.insertSelective(orderInfoDO);
+        if (isNewOrder) {
+            orderInfoDO.setStatus(OrderStatus.SUCCESS);
+            orderInfoDO.setCreateTime(new Date());
+            orderInfoDO.setFldN3((byte) 1);  //设置为 已充值
+            orderInfoDOMapper.insertSelective(orderInfoDO);
+        } else {
+            if (orderInfoDO.getIdValue() == null) {
+                log.error("订单号不存在,{}", JSON.toJSONString(orderInfoDO));
+                return false;
+            }
+            orderInfoDO.setFldN3((byte) 1);  //设置为 已充值
+            orderInfoDO.setUpdateTime(new Date());
+            orderInfoDOMapper.updateByPrimaryKeySelective(orderInfoDO);
+        }
         // 修改余额
         AccountBalanceDO accountBalanceDO = balanceService.singleQuery(new AccountBalanceDO().accountId(orderInfoDO.getAccountId()));
         accountBalanceDO.setTotalBalance(accountBalanceDO.getTotalBalance() + orderInfoDO.getBalanceChange());

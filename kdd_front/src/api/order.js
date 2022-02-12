@@ -37,10 +37,10 @@ export function pcPay(data) {
 
 
 // 订单查询 - 跟进订单状态
-export function queryPay(data) {
+export function queryAndRefresh(data) {
     data = qs.stringify(data)
     return request({
-        url: '/paycenter/order/query',
+        url: '/kdd/order/queryAndRefresh',
         method: 'post',
         data
     })
