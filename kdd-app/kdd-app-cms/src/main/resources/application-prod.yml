@@ -37,3 +37,4 @@ paycenter:
   baseUrl: ${PAYCENTER_BASEURL:http://127.0.0.1:7171/}
   alipay:
     webpay: /paycenter/alipay/pay/web
+    syncNotify: alipay/alipay_sync_notify  #同步回调=baseUrl+syncNotify

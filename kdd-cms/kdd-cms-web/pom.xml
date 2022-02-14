@@ -32,5 +32,11 @@
             <artifactId>kdd-core-service</artifactId>
             <version>${kuaididouble.version}</version>
         </dependency>
+        <!-- 用于业务系统对回调请求验签 -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

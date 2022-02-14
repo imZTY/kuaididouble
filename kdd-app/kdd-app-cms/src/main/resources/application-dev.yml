@@ -35,5 +35,5 @@ logging:
 paycenter:
   baseUrl: http://127.0.0.1:8088/paycenter/
   alipay:
-    host: http://127.0.0.1:7171/paycenter
     webpay: /paycenter/alipay/pay/web
+    syncNotify: alipay/alipay_sync_notify  #同步回调=baseUrl+syncNotify

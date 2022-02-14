@@ -15,5 +15,19 @@
         <module>kdd-cms-web</module>
     </modules>
 
+    <properties>
+        <alipay.sdk.version>4.8.73.ALL</alipay.sdk.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 用于业务系统对回调请求验签 -->
+            <dependency>
+                <groupId>com.alipay.sdk</groupId>
+                <artifactId>alipay-sdk-java</artifactId>
+                <version>${alipay.sdk.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
