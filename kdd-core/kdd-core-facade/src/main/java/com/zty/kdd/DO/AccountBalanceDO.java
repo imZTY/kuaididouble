@@ -22,6 +22,11 @@ public class AccountBalanceDO extends DataDTO {
         return this;
     };
 
+    public AccountBalanceDO productId(Integer productId) {
+        setProductId(productId);
+        return this;
+    };
+
     public Integer getId() {
         return id;
     }

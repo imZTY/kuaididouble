@@ -2,7 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zty.kdd.dao.AccountBalanceDOMapper" >
   <resultMap id="BaseResultMap" type="com.zty.kdd.DO.AccountBalanceDO" >
-    <id column="account_id" property="accountId" jdbcType="INTEGER" />
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="account_id" property="accountId" jdbcType="INTEGER" />
+    <result column="product_id" property="productId" jdbcType="INTEGER" />
     <result column="total_balance" property="totalBalance" jdbcType="BIGINT" />
     <result column="available_balance" property="availableBalance" jdbcType="BIGINT" />
     <result column="frozen_balance" property="frozenBalance" jdbcType="BIGINT" />
@@ -67,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    account_id, total_balance, available_balance, frozen_balance, pre_salty
+    id, account_id, product_id, total_balance, available_balance, frozen_balance, pre_salty
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zty.kdd.DO.example.AccountBalanceDOExample" >
     select
@@ -85,14 +87,21 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
+    <include refid="Base_Column_List" />
+    from account_balance
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByAccountAndProduct" resultMap="BaseResultMap" parameterType="com.zty.kdd.DO.AccountBalanceDO" >
+    select
     <include refid="Base_Column_List" />
     from account_balance
     where account_id = #{accountId,jdbcType=INTEGER}
+    AND product_id = #{productId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from account_balance
-    where account_id = #{accountId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.zty.kdd.DO.example.AccountBalanceDOExample" >
     delete from account_balance
@@ -101,16 +110,24 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zty.kdd.DO.AccountBalanceDO" >
-    insert into account_balance (account_id, total_balance, available_balance, 
-      frozen_balance, pre_salty)
-    values (#{accountId,jdbcType=INTEGER}, #{totalBalance,jdbcType=BIGINT}, #{availableBalance,jdbcType=BIGINT}, 
-      #{frozenBalance,jdbcType=BIGINT}, #{preSalty,jdbcType=VARCHAR})
+    insert into account_balance (id, account_id, product_id,
+                                 total_balance, available_balance, frozen_balance,
+                                 pre_salty)
+    values (#{id,jdbcType=INTEGER}, #{accountId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER},
+            #{totalBalance,jdbcType=BIGINT}, #{availableBalance,jdbcType=BIGINT}, #{frozenBalance,jdbcType=BIGINT},
+            #{preSalty,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zty.kdd.DO.AccountBalanceDO" >
     insert into account_balance
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
       <if test="accountId != null" >
         account_id,
+      </if>
+      <if test="productId != null" >
+        product_id,
       </if>
       <if test="totalBalance != null" >
         total_balance,
@@ -126,8 +143,14 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
       <if test="accountId != null" >
         #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=INTEGER},
       </if>
       <if test="totalBalance != null" >
         #{totalBalance,jdbcType=BIGINT},
@@ -152,8 +175,14 @@
   <update id="updateByExampleSelective" parameterType="map" >
     update account_balance
     <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
       <if test="record.accountId != null" >
         account_id = #{record.accountId,jdbcType=INTEGER},
+      </if>
+      <if test="record.productId != null" >
+        product_id = #{record.productId,jdbcType=INTEGER},
       </if>
       <if test="record.totalBalance != null" >
         total_balance = #{record.totalBalance,jdbcType=BIGINT},
@@ -174,18 +203,26 @@
   </update>
   <update id="updateByExample" parameterType="map" >
     update account_balance
-    set account_id = #{record.accountId,jdbcType=INTEGER},
-      total_balance = #{record.totalBalance,jdbcType=BIGINT},
-      available_balance = #{record.availableBalance,jdbcType=BIGINT},
-      frozen_balance = #{record.frozenBalance,jdbcType=BIGINT},
-      pre_salty = #{record.preSalty,jdbcType=VARCHAR}
+    set id = #{record.id,jdbcType=INTEGER},
+    account_id = #{record.accountId,jdbcType=INTEGER},
+    product_id = #{record.productId,jdbcType=INTEGER},
+    total_balance = #{record.totalBalance,jdbcType=BIGINT},
+    available_balance = #{record.availableBalance,jdbcType=BIGINT},
+    frozen_balance = #{record.frozenBalance,jdbcType=BIGINT},
+    pre_salty = #{record.preSalty,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zty.kdd.DO.AccountBalanceDO" >
+  <update id="updateByAccountAndProductSelective" parameterType="com.zty.kdd.DO.AccountBalanceDO" >
     update account_balance
     <set >
+      <if test="accountId != null" >
+        account_id = #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
       <if test="totalBalance != null" >
         total_balance = #{totalBalance,jdbcType=BIGINT},
       </if>
@@ -200,37 +237,64 @@
       </if>
     </set>
     where account_id = #{accountId,jdbcType=INTEGER}
+    AND product_id = #{productId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zty.kdd.DO.AccountBalanceDO" >
+    update account_balance
+    <set >
+      <if test="accountId != null" >
+        account_id = #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="totalBalance != null" >
+        total_balance = #{totalBalance,jdbcType=BIGINT},
+      </if>
+      <if test="availableBalance != null" >
+        available_balance = #{availableBalance,jdbcType=BIGINT},
+      </if>
+      <if test="frozenBalance != null" >
+        frozen_balance = #{frozenBalance,jdbcType=BIGINT},
+      </if>
+      <if test="preSalty != null" >
+        pre_salty = #{preSalty,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zty.kdd.DO.AccountBalanceDO" >
     update account_balance
-    set total_balance = #{totalBalance,jdbcType=BIGINT},
-      available_balance = #{availableBalance,jdbcType=BIGINT},
-      frozen_balance = #{frozenBalance,jdbcType=BIGINT},
-      pre_salty = #{preSalty,jdbcType=VARCHAR}
-    where account_id = #{accountId,jdbcType=INTEGER}
+    set account_id = #{accountId,jdbcType=INTEGER},
+        product_id = #{productId,jdbcType=INTEGER},
+        total_balance = #{totalBalance,jdbcType=BIGINT},
+        available_balance = #{availableBalance,jdbcType=BIGINT},
+        frozen_balance = #{frozenBalance,jdbcType=BIGINT},
+        pre_salty = #{preSalty,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <!-- 冻结 -->
   <update id="checkAndFrozen" parameterType="com.zty.kdd.DO.AccountBalanceDO">
     update account_balance
     set available_balance = available_balance - 1,
         frozen_balance = frozen_balance + 1
-    where account_id = #{accountId,jdbcType=INTEGER}
-        and available_balance > 0
+    where account_id = #{accountId,jdbcType=INTEGER} AND product_id = #{productId,jdbcType=INTEGER}
+      and available_balance > 0
   </update>
   <!-- 解冻 -->
   <update id="checkAndUnfrozen" parameterType="com.zty.kdd.DO.AccountBalanceDO">
     update account_balance
     set available_balance = available_balance + 1,
         frozen_balance = frozen_balance - 1
-        where account_id = #{accountId,jdbcType=INTEGER}
-          and available_balance > 0
+    where account_id = #{accountId,jdbcType=INTEGER} AND product_id = #{productId,jdbcType=INTEGER}
+      and available_balance > 0
   </update>
   <!-- 实扣 -->
   <update id="checkAndCut" parameterType="com.zty.kdd.DO.AccountBalanceDO">
     update account_balance
     set total_balance = total_balance - 1,
         frozen_balance = frozen_balance - 1
-        where account_id = #{accountId,jdbcType=INTEGER}
-          and available_balance > 0
+    where account_id = #{accountId,jdbcType=INTEGER} AND product_id = #{productId,jdbcType=INTEGER}
+      and available_balance > 0
   </update>
 </mapper>

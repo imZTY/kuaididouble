@@ -133,9 +133,9 @@ export default {
     handelConfirm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          this.form.orderAmount = this.form.orderAmount * 100
-          this.form.actualAmount = this.form.actualAmount * 100
-          this.form.discountAmount = this.form.discountAmount * 100
+          this.form.orderAmount = this.form.orderAmount == null ? 0 : this.form.orderAmount * 100
+          this.form.actualAmount = this.form.actualAmount == null ? 0 : this.form.actualAmount * 100
+          this.form.discountAmount = this.form.discountAmount == null ? 0 : this.form.discountAmount * 100
           charge(this.form).then(res => {
             if (res.data.resultCode === 200) {
               Message({

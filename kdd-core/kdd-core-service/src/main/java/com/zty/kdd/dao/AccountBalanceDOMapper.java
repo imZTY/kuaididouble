@@ -42,4 +42,8 @@ public interface AccountBalanceDOMapper {
 
     // 实扣余额
     int checkAndCut(AccountBalanceDO queryDo);
+
+    AccountBalanceDO selectByAccountAndProduct(AccountBalanceDO queryDo);
+
+    int updateByAccountAndProductSelective(AccountBalanceDO accountBalanceDO);
 }

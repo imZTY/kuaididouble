@@ -903,7 +903,7 @@ export default {
     },
   },
   created() {
-  },
+  }
 }
 </script>
 

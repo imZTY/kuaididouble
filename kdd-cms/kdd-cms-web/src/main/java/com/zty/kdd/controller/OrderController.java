@@ -10,6 +10,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.github.pagehelper.Page;
+import com.zty.common.DO.ProductInfoDO;
+import com.zty.common.service.ProductService;
+import com.zty.framework.exception.BusinessException;
 import com.zty.kdd.DO.ChargeInfoDO;
 import com.zty.kdd.response.PcPayResponse;
 import com.zty.kdd.service.ChargeService;
@@ -64,6 +67,9 @@ public class OrderController {
     @Autowired
     private PayCenterHelper payCenterHelper;
 
+    @Autowired
+    private ProductService productService;
+
     /**
      * 网站支付
      * @return
@@ -93,13 +99,21 @@ public class OrderController {
         try {
             // 根据收费规则，创建订单基本信息
             OrderInfoDO order = parseOrderInfoFromCharge(chargeInfoDO, currentUID, pcPayRequest);
+            // FIXME: 30/3/2022 临时使用默认产品，暂时未支持传入产品
+            ProductInfoDO productInfoDO = productService.getDefalutProduct();
+            if (productInfoDO == null) {
+                log.error("未配置默认产品");
+                throw new BusinessException("500", "未配置默认产品");
+            }
+            // 设置订单的产品信息
+            order.setFldN2(productInfoDO.getId());
             String orderId = String.valueOf(payOrderService.createNewOrder(order));
             log.info("已生成本地订单号:{}", orderId);
             // 获取相应支付中心的地址（returnUrl传空 默认使用支付中心的同步回调接收地址）
             String payCenterUrl = payCenterHelper.getAlipayWebpayUrl(MoneyUtil.fenToYuan(order.getActualAmount()),
                     orderId,
-                    "kdd网站支付",
-                    "余额套餐充值",
+                    "kdd套餐余额充值",
+                    productInfoDO.getName(),
                     returnUrl);
             log.info("即将返回支付中心地址: {}", payCenterUrl);
             return ResultDTO.success(new PcPayResponse(orderId, payCenterUrl));
@@ -137,7 +151,7 @@ public class OrderController {
                 boolean isOk = this.kddOrderService.chargeWithTransaction(orderResp, false);
                 log.info("充值结果:{}, 订单号:{}", isOk, orderResp.getId());
             } catch (Exception e) {
-                log.error("充值失败,订单信息:{}", JSON.toJSONString(orderResp));
+                log.error("充值失败,订单信息:{}, ", JSON.toJSONString(orderResp), e);
             }
         }
         return payCenterResponse;
@@ -173,7 +187,7 @@ public class OrderController {
             if (orderInfoDO.getAccountId() == null) {
                 return ResultDTO.error(403, "未传入充值账户ID");
             }
-            // 根据订单类型（充值/退款）分别进行处理
+            // 根据订单类型（充值/退款）分别进行进一步参数检查
             if (OrderType.CHARGE == orderInfoDO.getOrderType()) {
                 // 充值
                 if (orderInfoDO.getThirdOrderNo() == null) {

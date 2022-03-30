@@ -6,11 +6,13 @@ import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.zty.framework.exception.BusinessException;
 import com.zty.pay.DO.OrderInfoDO;
 import com.zty.pay.DO.example.OrderInfoDOExample;
 import com.zty.pay.constant.OrderStatus;
 import com.zty.pay.constant.OrderType;
 import com.zty.pay.dao.OrderInfoDOMapper;
+import com.zty.pay.service.PayOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class KddOrderServiceImpl implements KddOrderService {
 
     @Autowired
     private BalanceService balanceService;
+
+    @Autowired
+    private PayOrderService payOrderService;
 
     /**
      * 事务充值
@@ -61,7 +66,8 @@ public class KddOrderServiceImpl implements KddOrderService {
             orderInfoDO.setStatus(OrderStatus.SUCCESS);
             orderInfoDO.setCreateTime(new Date());
             orderInfoDO.setFldN3((byte) 1);  //设置为 已充值
-            orderInfoDOMapper.insertSelective(orderInfoDO);
+            String orderId = String.valueOf(payOrderService.createNewOrder(orderInfoDO));
+            log.info("已生成本地订单号:{}", orderId);
         } else {
             if (orderInfoDO.getIdValue() == null) {
                 log.error("订单号不存在,{}", JSON.toJSONString(orderInfoDO));
@@ -71,14 +77,20 @@ public class KddOrderServiceImpl implements KddOrderService {
             orderInfoDO.setUpdateTime(new Date());
             orderInfoDOMapper.updateByPrimaryKeySelective(orderInfoDO);
         }
+        // 如果未说明产品，则使用默认产品
+        AccountBalanceDO balanceQueryDO = new AccountBalanceDO().accountId(orderInfoDO.getAccountId());
+        if (orderInfoDO.getFldN2() != null) {
+            balanceQueryDO.setProductId(orderInfoDO.getFldN2());
+        }
         // 修改余额
-        AccountBalanceDO accountBalanceDO = balanceService.singleQuery(new AccountBalanceDO().accountId(orderInfoDO.getAccountId()));
+        AccountBalanceDO accountBalanceDO = balanceService.singleQuery(balanceQueryDO);
         accountBalanceDO.setTotalBalance(accountBalanceDO.getTotalBalance() + orderInfoDO.getBalanceChange());
         accountBalanceDO.setAvailableBalance(accountBalanceDO.getAvailableBalance() + orderInfoDO.getBalanceChange());
         accountBalanceDO.setPreSalty(System.currentTimeMillis()+"");
-        int rows  = balanceService.update(accountBalanceDO);
+        int rows = balanceService.update(accountBalanceDO);
         if (rows != 1) {
-            throw new Exception("充值异常，修改余额失败");
+            log.error("影响条数非1:{}", rows);
+            throw new BusinessException("500", "充值异常，修改余额失败");
         }
         return true;
     }

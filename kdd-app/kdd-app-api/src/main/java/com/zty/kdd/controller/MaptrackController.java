@@ -48,11 +48,14 @@ public class MaptrackController {
     @RequestMapping(value =  "/query", method = {RequestMethod.POST ,RequestMethod.GET })
     public ResultDTO query(MaptrackQueryRequest reqAO) {
         // 检查当前账号是否有接口权限
+        // FIXME: 30/3/2022 使用产品编码来获取产品ID，而不是直接用4
         if (!productService.checkIsLink(reqAO.getCurrentUID(), 4)) {
             log.warn("账号{}无权访问产品{}", reqAO.getCurrentUID(), 4);
             return ResultDTO.error(403, "当前账号无权操作");
         }
-        AccountBalanceDO accountBalanceDO = new AccountBalanceDO().accountId(reqAO.getCurrentUID());
+        // TODO: 30/3/2022 设置产品
+        AccountBalanceDO accountBalanceDO = new AccountBalanceDO()
+                .accountId(reqAO.getCurrentUID());
         try {
             // 检查并预扣余额
             log.info("检查并预扣余额, {}", accountBalanceDO.getAccountId());
