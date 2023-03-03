@@ -1,0 +1,19 @@
+package com.zty.kdd.scheduled;
+
+import java.util.concurrent.Executors;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+
+/**
+ * @author: tianyi.zeng
+ * @create: 2/4/2022 - 下午 10:29
+ */
+@Configuration
+public class ScheduleConfig implements SchedulingConfigurer {
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
+        scheduledTaskRegistrar.setScheduler(Executors.newScheduledThreadPool(2));
+    }
+}

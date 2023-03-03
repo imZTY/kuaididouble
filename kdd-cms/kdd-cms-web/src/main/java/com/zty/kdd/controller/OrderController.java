@@ -145,7 +145,10 @@ public class OrderController {
     public ResultDTO queryAndRefresh(OrderInfoDO orderInfoDO) {
         ResultDTO<OrderInfoDO> payCenterResponse = this.payCenterHelper.queryOrder(orderInfoDO);
         OrderInfoDO orderResp = payCenterResponse.getData();
-        if (orderResp != null && payCenterResponse.getResultCode() == 200 && orderResp.getFldN3() == 0) {
+        if (orderResp != null
+                && payCenterResponse.getResultCode() == 200
+                && OrderStatus.SUCCESS == orderResp.getStatus()
+                && orderResp.getFldN3() == 0) {
             // 如果未充值，则执行充值，
             try {
                 boolean isOk = this.kddOrderService.chargeWithTransaction(orderResp, false);
